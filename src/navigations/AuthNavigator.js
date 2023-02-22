@@ -1,7 +1,8 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import { Login, Register } from "../screens";
+import { Login, Register, ForgotPassword } from "../screens";
 import { ROUTES } from "../constants";
+import DrawerNavigator from "./DrawerNavigator";
 const Stack = createStackNavigator();
 
 function AuthNavigator() {
@@ -12,7 +13,21 @@ function AuthNavigator() {
         component={Login}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name={ROUTES.REGISTER} component={Register} />
+      <Stack.Screen
+        name={ROUTES.REGISTER}
+        component={Register}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={ROUTES.FORGOT_PASSWORD}
+        component={ForgotPassword}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={ROUTES.HOME}
+        component={DrawerNavigator}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 }
