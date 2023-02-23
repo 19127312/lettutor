@@ -1,10 +1,323 @@
-import { View, Text } from "react-native";
-import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
+import React, { useContext, useState, useEffect } from "react";
+import ThemeContext from "../../context/ThemeProvider";
+import { COLORS, IMGS } from "../../constants";
+import { TextInput } from "react-native-paper";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import moment from "moment";
+import LocalizationContext from "../../context/LocalizationProvider";
+import DropDownPicker from "react-native-dropdown-picker";
+import * as ImagePicker from "expo-image-picker";
+const { width } = Dimensions.get("screen");
 
 export default function Profile() {
+  const { i18n } = useContext(LocalizationContext);
+  const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
+  const [img, setImg] = useState(IMGS.user);
+  const { themeData } = useContext(ThemeContext);
+  const [name, setName] = useState("Nguyen Van Ar");
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [birthDate, setBirthDate] = useState(
+    moment("12-25-1995", ["MM-DD-YYYY", "YYYY-MM-DD"])
+  );
+  const [phone, setPhone] = useState("0123456789");
+
+  const [openCountry, setOpenCountry] = useState(false);
+  const [valueCountry, setValueCountry] = useState([]);
+  const [itemsCountry, setItemsCountry] = useState([
+    { label: "vi", value: "vi" },
+    { label: "en", value: "en" },
+  ]);
+
+  const [openLevel, setOpenLevel] = useState(false);
+  const [valueLevel, setValueLevel] = useState([]);
+  const [itemsLevel, setItemsLevel] = useState([
+    { label: i18n.t("Beginner"), value: i18n.t("Beginner") },
+    { label: i18n.t("Intermediate"), value: i18n.t("Intermediate") },
+    { label: i18n.t("Advanced"), value: i18n.t("Advanced") },
+  ]);
+
+  const [openCourses, setOpenCourses] = useState(false);
+  const [valueCourses, setValueCourses] = useState([]);
+  const [itemsCourses, setItemsCourses] = useState([
+    { label: "STARTERS", value: "STARTERS" },
+    { label: "MOVERS", value: "MOVERS" },
+    { label: "FLYERS", value: "FLYERS" },
+    { label: "KET", value: "KET" },
+    { label: "PET", value: "PET" },
+    { label: "IELTS", value: "IELTS" },
+    { label: "TOEFL", value: "TOEFL" },
+    { label: "TOIEC", value: "TOIEC" },
+  ]);
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (date) => {
+    setBirthDate(date);
+    hideDatePicker();
+  };
+  useEffect(() => {
+    (async () => {
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      setHasGalleryPermission(status === "granted");
+    })();
+  }, []);
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    if (!result.cancelled) {
+      setImg(result.uri);
+    }
+  };
+  if (hasGalleryPermission === null) {
+  }
   return (
-    <View>
-      <Text>Profile</Text>
+    <View
+      style={[styles.container, { backgroundColor: themeData.backgroundColor }]}
+    >
+      <View style={styles.imgContainer}>
+        <TouchableOpacity onPress={() => pickImage()}>
+          <Image source={img} style={styles.userImg} />
+        </TouchableOpacity>
+
+        {/* <Text style={styles.userName}>Kiet Tuong</Text> */}
+        <Text style={styles.userEmail}>abc@gmail.com</Text>
+        <TextInput
+          mode="outlined"
+          style={styles.input}
+          value={name}
+          onChangeText={setName}
+          name="name"
+          label="Tên"
+          defaultValue="Nguyen Van Ar"
+          left={<TextInput.Icon icon="account" />}
+        />
+        <TouchableOpacity onPress={showDatePicker}>
+          <TextInput
+            mode="outlined"
+            style={styles.input}
+            value={moment(birthDate).format("DD MMMM, YYYY")}
+            name="dob"
+            label="Ngày sinh"
+            editable={false}
+            left={<TextInput.Icon icon="calendar" />}
+          />
+          <DateTimePickerModal
+            isVisible={isDatePickerVisible}
+            mode="date"
+            onChange={(date) => setBirthDate(date)}
+            value={handleConfirm}
+            onConfirm={handleConfirm}
+            onCancel={hideDatePicker}
+          />
+        </TouchableOpacity>
+        <DropDownPicker
+          placeholder={i18n.t("Country")}
+          style={styles.dropdownmulti}
+          open={openCountry}
+          value={valueCountry}
+          items={itemsCountry}
+          setOpen={setOpenCountry}
+          setValue={setValueCountry}
+          setItems={setItemsCountry}
+          theme="LIGHT"
+        />
+        <TextInput
+          mode="outlined"
+          style={styles.input}
+          value={phone}
+          onChangeText={setPhone}
+          name="SDT"
+          label="SDT"
+          defaultValue="Nguyen Van Ar"
+          left={<TextInput.Icon icon="phone" />}
+        />
+
+        <DropDownPicker
+          placeholder={i18n.t("SelectCourse")}
+          style={styles.dropdownmulti}
+          open={openCourses}
+          value={valueCourses}
+          items={itemsCourses}
+          setOpen={setOpenCourses}
+          setValue={setValueCourses}
+          setItems={setItemsCourses}
+          theme="LIGHT"
+          multiple={true}
+          mode="BADGE"
+          badgeDotColors={[
+            "#e76f51",
+            "#00b4d8",
+            "#e9c46a",
+            "#e76f51",
+            "#8ac926",
+            "#00b4d8",
+            "#e9c46a",
+          ]}
+          dropDownDirection="TOP"
+        />
+        <DropDownPicker
+          placeholder={i18n.t("SelectLevel")}
+          style={styles.dropdownmulti}
+          open={openLevel}
+          value={valueLevel}
+          items={itemsLevel}
+          setOpen={setOpenLevel}
+          setValue={setValueLevel}
+          setItems={setItemsLevel}
+          theme="LIGHT"
+          mode="BADGE"
+          badgeDotColors={[
+            "#e76f51",
+            "#00b4d8",
+            "#e9c46a",
+            "#e76f51",
+            "#8ac926",
+            "#00b4d8",
+            "#e9c46a",
+          ]}
+        />
+        <TouchableOpacity style={styles.updateButton}>
+          <Text style={styles.updateButtonText}> {i18n.t("Update")}</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+  },
+  userImg: {
+    width: 110,
+    height: 110,
+    borderRadius: 110 / 2,
+    borderWidth: 4,
+    borderColor: COLORS.white,
+  },
+  imgContainer: {
+    width: "100%",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 20,
+  },
+  userName: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginTop: 10,
+  },
+  userEmail: {
+    fontSize: 15,
+    fontWeight: "italic",
+    marginTop: 5,
+    fontStyle: "italic",
+  },
+  input: {
+    width: width - 40,
+    // backgroundColor: "#fff",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 2,
+    marginVertical: 10,
+  },
+  dropdown3BtnStyle: {
+    width: "90%",
+    height: 50,
+    backgroundColor: "#FFF",
+    paddingHorizontal: 5,
+    borderWidth: 1,
+    borderRadius: 8,
+    borderColor: "#444",
+    marginVertical: 10,
+  },
+  dropdown3BtnChildStyle: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 10,
+  },
+  dropdown3BtnImage: { width: 30, height: 30, resizeMode: "cover" },
+  dropdown3BtnTxt: {
+    color: "#444",
+    textAlign: "center",
+    fontSize: 12,
+  },
+  dropdown3DropdownStyle: { backgroundColor: "slategray" },
+  dropdown3RowStyle: {
+    backgroundColor: "slategray",
+    borderBottomColor: "#444",
+    height: 35,
+  },
+  dropdown3RowChildStyle: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    paddingHorizontal: 18,
+  },
+  dropdownRowImage: { width: 30, height: 30, resizeMode: "cover" },
+  dropdown3RowTxt: {
+    color: "#F1F1F1",
+    textAlign: "center",
+    fontWeight: "bold",
+    fontSize: 15,
+    marginHorizontal: 12,
+  },
+  dropdownmulti: {
+    marginVertical: 10,
+
+    width: "90%",
+    height: 50,
+    paddingHorizontal: 18,
+    alignSelf: "center",
+  },
+  updateButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: "90%",
+    height: 50,
+    backgroundColor: COLORS.primary,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 2,
+    borderRadius: 15,
+    marginVertical: 30,
+  },
+  updateButtonText: {
+    color: "white",
+    alignSelf: "center",
+    fontSize: 15,
+    fontWeight: "bold",
+  },
+});

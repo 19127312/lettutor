@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import {
   BecomeTeacher,
@@ -13,19 +13,30 @@ import Icon from "react-native-vector-icons/Ionicons";
 import CustomDrawer from "../components/CustomDrawer";
 
 import BottomTabNavigator from "./BottomTabNavigator";
+import LocalizationContext from "../context/LocalizationProvider";
+import ThemeContext from "../context/ThemeProvider";
+
 const Drawer = createDrawerNavigator();
 
 function DrawerNavigator() {
+  const { i18n } = useContext(LocalizationContext);
+  const { themeData } = useContext(ThemeContext);
   return (
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawer {...props} />}
       screenOptions={{
         headerTitleAlign: "center",
-        headerTintColor: COLORS.white,
+        headerTintColor: themeData.color,
         drawerActiveBackgroundColor: COLORS.primary,
         drawerActiveTintColor: COLORS.white,
+        drawerInactiveTintColor: themeData.color,
         headerStyle: {
           backgroundColor: COLORS.primary,
+        },
+        drawerStyle: {
+          backgroundColor: themeData.backgroundColor,
+          borderColor: COLORS.white,
+          borderWidth: 1,
         },
       }}
     >
@@ -47,6 +58,7 @@ function DrawerNavigator() {
           drawerIcon: ({ focused, color, size }) => (
             <Icon name="person-sharp" size={18} color={color} />
           ),
+          title: i18n.t("Profile"),
         }}
       />
       <Drawer.Screen
@@ -57,6 +69,7 @@ function DrawerNavigator() {
           drawerIcon: ({ focused, color, size }) => (
             <Icon name="heart" size={18} color={color} />
           ),
+          title: i18n.t("FavoriteTeachers"),
         }}
       />
       <Drawer.Screen
@@ -67,6 +80,7 @@ function DrawerNavigator() {
           drawerIcon: ({ focused, color, size }) => (
             <Icon name="body" size={18} color={color} />
           ),
+          title: i18n.t("BecomeTeacher"),
         }}
       />
       <Drawer.Screen
@@ -77,6 +91,7 @@ function DrawerNavigator() {
           drawerIcon: ({ focused, color, size }) => (
             <Icon name="hourglass" size={18} color={color} />
           ),
+          title: i18n.t("HistoryCourses"),
         }}
       />
       <Drawer.Screen
@@ -87,6 +102,7 @@ function DrawerNavigator() {
           drawerIcon: ({ focused, color, size }) => (
             <Icon name="settings" size={18} color={color} />
           ),
+          title: i18n.t("Settings"),
         }}
       />
       <Drawer.Screen
@@ -97,6 +113,7 @@ function DrawerNavigator() {
           drawerIcon: ({ focused, color, size }) => (
             <Icon name="log-out" size={18} color={color} />
           ),
+          title: i18n.t("Logout"),
         }}
       />
     </Drawer.Navigator>
