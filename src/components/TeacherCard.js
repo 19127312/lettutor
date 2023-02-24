@@ -1,4 +1,11 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+  Pressable,
+} from "react-native";
 import React from "react";
 import ListTag from "./ListTag";
 import { AntDesign } from "@expo/vector-icons";
@@ -16,61 +23,70 @@ export default function TeacherCard() {
     "FEsssS",
   ];
   return (
-    <TouchableOpacity
-      onPress={() => {
-        console.log("Press");
-      }}
-      style={styles.containerTouchable}
-    >
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <View style={styles.HeaderRight}>
-            <Image style={styles.avtimg} source={IMGS.user} />
-            <View style={styles.nameContainer}>
-              <Text style={styles.name}>Teacher Seeeee</Text>
+    <View style={styles.outerContainer}>
+      <Pressable
+        onPress={() => {
+          console.log("Press");
+        }}
+        style={{ flex: 1 }}
+      >
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <View style={styles.HeaderRight}>
+              <Image style={styles.avtimg} source={IMGS.user} />
+              <View style={styles.nameContainer}>
+                <Text style={styles.name}>Teacher Seeeee</Text>
 
-              <Rating
-                type="custom"
-                readonly={true}
-                startingValue={3}
-                style={{
-                  marginVertical: 1,
-                  alignSelf: "flex-start",
-                }}
-                imageSize={20}
-                ratingBackgroundColor="transparent"
-              />
+                <Rating
+                  type="custom"
+                  readonly={true}
+                  startingValue={3}
+                  style={{
+                    marginVertical: 1,
+                    alignSelf: "flex-start",
+                  }}
+                  imageSize={20}
+                  ratingBackgroundColor="transparent"
+                />
+              </View>
+            </View>
+            <View style={styles.HeaderLeft}>
+              <AntDesign name="hearto" size={24} color="blue" />
             </View>
           </View>
-          <View style={styles.HeaderLeft}>
-            <AntDesign name="hearto" size={24} color="blue" />
+          <View style={styles.tagItem}>
+            <ListTag tags={listSpecialies} />
+          </View>
+          <View style={styles.descript}>
+            <Text numberOfLines={4} style={styles.textDescript}>
+              1 2 3 5234 123 123 123 123 123 325sd fsdf sdf sdf sdf
+            </Text>
           </View>
         </View>
-        <View style={styles.tagItem}>
-          <ListTag tags={listSpecialies} />
-        </View>
-        <View style={styles.descript}>
-          <Text numberOfLines={4} style={styles.textDescript}>
-            1 2 3 5234 123 123 123 123 123 325sd fsdf sdf sdf sdf
-          </Text>
-        </View>
-      </View>
-    </TouchableOpacity>
+      </Pressable>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.white,
-    marginBottom: 10,
-    marginTop: 10,
-    borderWidth: 1,
-    borderColor: "gray",
+  },
+
+  outerContainer: {
+    flex: 1,
+    height: 240,
+    borderRadius: 8,
+    elevation: 4,
+    shadowColor: "black",
+    shadowOpacity: 0.26,
+    overflow: "hidden",
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+    backgroundColor: COLORS.white,
+    marginVertical: 5,
     borderRadius: 16,
     marginHorizontal: 16,
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 2,
   },
   header: {
     flexDirection: "row",

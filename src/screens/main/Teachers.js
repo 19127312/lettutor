@@ -28,7 +28,7 @@ export default function Teachers() {
   return (
     <View style={styles.container}>
       <Searchbar
-        placeholder="Search"
+        placeholder={i18n.t("Search")}
         onChangeText={onChangeSearch}
         value={searchQuery}
         style={styles.searchBar}
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     width: "90%",
     borderRadius: 10,
     alignSelf: "center",
-    marginTop: 5,
+    marginVertical: 10,
   },
   filterBar: {
     width: "90%",

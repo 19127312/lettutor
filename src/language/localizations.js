@@ -29,6 +29,7 @@ const en = {
   TopTeachers: "Top Teachers",
   SeeAll: "See All",
   Specilities: "Specilities",
+  Search: "Search",
 };
 const vi = {
   Language: "Ngôn ngữ",
@@ -61,6 +62,7 @@ const vi = {
   TopTeachers: "Giáo viên hàng đầu",
   SeeAll: "Xem tất cả",
   Specilities: "Chuyên môn",
+  Search: "Tìm kiếm",
 };
 
 export { en, vi };

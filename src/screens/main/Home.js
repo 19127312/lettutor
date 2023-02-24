@@ -8,9 +8,9 @@ import {
 import React, { useContext } from "react";
 import TeacherCard from "../../components/TeacherCard";
 import LocalizationContext from "../../context/LocalizationProvider";
-import { COLORS } from "../../constants";
+import { COLORS, ROUTES } from "../../constants";
 
-export default function Home() {
+export default function Home({ navigation }) {
   const { i18n } = useContext(LocalizationContext);
 
   const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -24,7 +24,13 @@ export default function Home() {
       </View>
       <View style={styles.textContainer}>
         <Text style={styles.title}>{i18n.t("TopTeachers")}</Text>
-        <Text style={styles.seeMore}>{i18n.t("SeeAll")}</Text>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate(ROUTES.TEACHERS);
+          }}
+        >
+          <Text style={styles.seeMore}>{i18n.t("SeeAll")}</Text>
+        </TouchableOpacity>
       </View>
       <FlatList
         data={arr}
