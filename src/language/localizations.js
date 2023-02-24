@@ -24,6 +24,11 @@ const en = {
   Advanced: "Advanced",
   Update: "Update",
   SelectCourse: "Select Course",
+  WelcomeHome: "Welcome to Let Tutor",
+  BookALesson: "Book a lesson",
+  TopTeachers: "Top Teachers",
+  SeeAll: "See All",
+  Specilities: "Specilities",
 };
 const vi = {
   Language: "Ngôn ngữ",
@@ -51,6 +56,11 @@ const vi = {
   Advanced: "Nâng cao",
   Update: "Cập nhật",
   SelectCourse: "Chọn khóa học",
+  WelcomeHome: "Chào mừng bạn đến Let Tutor",
+  BookALesson: "Đặt lịch học",
+  TopTeachers: "Giáo viên hàng đầu",
+  SeeAll: "Xem tất cả",
+  Specilities: "Chuyên môn",
 };
 
 export { en, vi };
