@@ -21,6 +21,7 @@ export default function Profile() {
   const { i18n } = useContext(LocalizationContext);
   const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
   const [img, setImg] = useState(IMGS.user);
+  const [hasImg, setHasImg] = useState(false);
   const { themeData } = useContext(ThemeContext);
   const [name, setName] = useState("Nguyen Van Ar");
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -79,12 +80,12 @@ export default function Profile() {
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [4, 4],
       quality: 1,
     });
-    if (!result.cancelled) {
-      setImg(result.uri);
+    if (!result.canceled) {
+      setImg(result.assets[0].uri);
+      setHasImg(true);
     }
   };
   if (hasGalleryPermission === null) {
@@ -95,7 +96,11 @@ export default function Profile() {
     >
       <View style={styles.imgContainer}>
         <TouchableOpacity onPress={() => pickImage()}>
-          <Image source={img} style={styles.userImg} />
+          {hasImg ? (
+            <Image source={{ uri: img }} style={styles.userImg} />
+          ) : (
+            <Image source={img} style={styles.userImg} />
+          )}
         </TouchableOpacity>
 
         {/* <Text style={styles.userName}>Kiet Tuong</Text> */}
