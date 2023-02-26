@@ -30,6 +30,12 @@ const en = {
   SeeAll: "See All",
   Specilities: "Specilities",
   Search: "Search",
+  Overview: "Overview",
+  ExperienceLevel: "Experience Level",
+  CourseLength: "Course Length",
+  ListTopics: "List Topics",
+  WhyTakeThisCourse: "Why take this course ?",
+  WhatWillYouBeAbleToDo: "What will you be able to do ?",
 };
 const vi = {
   Language: "Ngôn ngữ",
@@ -63,6 +69,12 @@ const vi = {
   SeeAll: "Xem tất cả",
   Specilities: "Chuyên môn",
   Search: "Tìm kiếm",
+  Overview: "Tổng quan",
+  ExperienceLevel: "Trình độ kinh nghiệm",
+  CourseLength: "Thời lượng khóa học",
+  ListTopics: "Danh sách chủ đề",
+  WhyTakeThisCourse: "Tại sao nên học khóa học này ?",
+  WhatWillYouBeAbleToDo: "Bạn có thể làm gì ?",
 };
 
 export { en, vi };

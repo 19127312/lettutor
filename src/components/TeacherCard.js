@@ -6,13 +6,16 @@ import {
   Image,
   Pressable,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import ListTag from "./ListTag";
 import { AntDesign } from "@expo/vector-icons";
-import { COLORS, IMGS } from "../constants";
+import { COLORS, IMGS, ROUTES } from "../constants";
 import { Rating, AirbnbRating } from "react-native-elements";
+import { useNavigation } from "@react-navigation/native";
 
 export default function TeacherCard() {
+  const navigation = useNavigation();
+  const [followStatus, setFollowStatus] = useState(false);
   const listSpecialies = [
     "English",
     "Math",
@@ -27,6 +30,7 @@ export default function TeacherCard() {
       <Pressable
         onPress={() => {
           console.log("Press");
+          navigation.navigate(ROUTES.TEACHER_DETAIL);
         }}
         style={{ flex: 1 }}
       >
@@ -51,7 +55,19 @@ export default function TeacherCard() {
               </View>
             </View>
             <View style={styles.HeaderLeft}>
-              <AntDesign name="hearto" size={24} color="blue" />
+              <Pressable
+                style={styles.btnFollow}
+                onPress={() => {
+                  console.log("Press follow");
+                  setFollowStatus(!followStatus);
+                }}
+              >
+                <AntDesign
+                  name={followStatus ? "heart" : "hearto"}
+                  size={24}
+                  color="blue"
+                />
+              </Pressable>
             </View>
           </View>
           <View style={styles.tagItem}>

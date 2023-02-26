@@ -14,3 +14,6 @@ export { default as Settings } from "./drawer/Settings";
 export { default as Logout } from "./drawer/Logout";
 export { default as HistoryCourses } from "./drawer/HistoryCourses";
 export { default as Profile } from "./drawer/Profile";
+
+export { default as CourseDetail } from "./detailScreen/CourseDetail";
+export { default as TeacherDetail } from "./detailScreen/TeacherDetail";

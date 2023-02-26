@@ -19,4 +19,8 @@ export default {
   LOGOUT: "Logout",
   HISTORY_COURSES: "History Courses",
   PROFILE: "Profile",
+
+  //Detail
+  COURSE_DETAIL: "Course Detail",
+  TEACHER_DETAIL: "Teacher Detail",
 };

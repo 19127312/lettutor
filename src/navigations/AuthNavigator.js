@@ -1,6 +1,12 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import { Login, Register, ForgotPassword } from "../screens";
+import {
+  Login,
+  Register,
+  ForgotPassword,
+  CourseDetail,
+  TeacherDetail,
+} from "../screens";
 import { ROUTES } from "../constants";
 import DrawerNavigator from "./DrawerNavigator";
 const Stack = createStackNavigator();
@@ -28,6 +34,8 @@ function AuthNavigator() {
         component={DrawerNavigator}
         options={{ headerShown: false }}
       />
+      <Stack.Screen name={ROUTES.COURSE_DETAIL} component={CourseDetail} />
+      <Stack.Screen name={ROUTES.TEACHER_DETAIL} component={TeacherDetail} />
     </Stack.Navigator>
   );
 }

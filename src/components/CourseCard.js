@@ -1,13 +1,17 @@
 import { StyleSheet, Text, View, Pressable, Image } from "react-native";
 import React from "react";
-import { COLORS } from "../constants";
+import { COLORS, ROUTES } from "../constants";
 import CourseBackground from "../assets/CourseBackground.png";
-export default function CourseCard() {
+import { useNavigation } from "@react-navigation/native";
+
+export default function CourseCard({ style }) {
+  const navigation = useNavigation();
   return (
-    <View style={styles.gridItem}>
+    <View style={[styles.gridItem, style]}>
       <Pressable
         onPress={() => {
           console.log("Press card");
+          navigation.navigate(ROUTES.COURSE_DETAIL);
         }}
         style={{ flex: 1 }}
       >
