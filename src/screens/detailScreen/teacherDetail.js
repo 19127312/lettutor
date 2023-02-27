@@ -19,7 +19,6 @@ import { Video, AVPlaybackStatus } from "expo-av";
 export default function ProfileScreen1() {
   const { i18n } = useContext(LocalizationContext);
   const video = React.useRef(null);
-  const [status, setStatus] = React.useState({});
 
   const listLanguages = ["English", "Math", "Physics"];
   const listSpecialies = ["English", "Math", "Physics"];
@@ -86,7 +85,6 @@ export default function ProfileScreen1() {
                 useNativeControls
                 resizeMode="contain"
                 isLooping
-                // onPlaybackStatusUpdate={(status) => setStatus(() => status)}
               />
 
               {/* Interact Buttons View */}
