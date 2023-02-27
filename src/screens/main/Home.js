@@ -13,12 +13,17 @@ import { COLORS, ROUTES } from "../../constants";
 export default function Home({ navigation }) {
   const { i18n } = useContext(LocalizationContext);
 
-  const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const arr = [1];
   return (
     <View style={styles.container}>
       <View style={styles.banner}>
         <Text style={styles.welcomeText}>{i18n.t("WelcomeHome")}</Text>
-        <TouchableOpacity style={styles.Button}>
+        <TouchableOpacity
+          style={styles.Button}
+          onPress={() => {
+            navigation.navigate(ROUTES.TEACHERS);
+          }}
+        >
           <Text style={styles.ButtonText}> {i18n.t("BookALesson")} </Text>
         </TouchableOpacity>
       </View>

@@ -36,6 +36,15 @@ const en = {
   ListTopics: "List Topics",
   WhyTakeThisCourse: "Why take this course ?",
   WhatWillYouBeAbleToDo: "What will you be able to do ?",
+  AboutMe: "About Me",
+  Education: "Education",
+  Experience: "Expericence",
+  Interests: "Interests",
+  Professional: "Professional",
+  Course: "Course",
+  RatingAndComment: "Rating & Comment",
+  Book: "Book",
+  Message: "Message",
 };
 const vi = {
   Language: "Ngôn ngữ",
@@ -75,6 +84,16 @@ const vi = {
   ListTopics: "Danh sách chủ đề",
   WhyTakeThisCourse: "Tại sao nên học khóa học này ?",
   WhatWillYouBeAbleToDo: "Bạn có thể làm gì ?",
+  AboutMe: "Giới thiệu bản thân",
+  Education: "Học vấn",
+  Experience: "Kinh nghiệm",
+  Interests: "Sở thích",
+  Expericence: "Kinh nghiệm",
+  Professional: "Nghề nghiệp",
+  Course: "Khóa học",
+  RatingAndComment: "Đánh giá & Nhận xét",
+  Book: "Đặt lịch",
+  Message: "Tin nhắn",
 };
 
 export { en, vi };

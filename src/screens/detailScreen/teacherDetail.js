@@ -1,126 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useRef } from "react";
 import {
   StyleSheet,
   Text,
   View,
-  ScrollView,
   TouchableOpacity,
   Image,
   ActivityIndicator,
   Dimensions,
+  Button,
 } from "react-native";
-
-import { Feather as Icon } from "@expo/vector-icons";
-
-// Fonts
-import { useFonts } from "expo-font";
-
-function Photos({ photos }) {
-  const imgWidth = Dimensions.get("screen").width * 0.33333;
-  return (
-    <View style={{}}>
-      <View
-        style={{
-          flexDirection: "row",
-          flexWrap: "wrap",
-          alignItems: "flex-start",
-        }}
-      >
-        {photos.map((photo, index) => (
-          <View>
-            <Image
-              style={{ width: imgWidth, height: imgWidth }}
-              source={{
-                uri: `https://picsum.photos/200/300?random=${index + 1}`,
-              }}
-            />
-          </View>
-        ))}
-      </View>
-    </View>
-  );
-}
-
-function Albums() {
-  const [albums] = useState([
-    {
-      name: "Animals",
-      images: [
-        "https://i.picsum.photos/id/1074/367/267.jpg?hmac=2YamGD7W1FNtp9UvAVUDdYUm44xzyHCthHqFl6jVT0M",
-        "https://i.picsum.photos/id/237/367/267.jpg?hmac=9Xp8JrOngpF2E_G3tRKnJMhZu5AX8FimulIG_sLj1xg",
-        "https://i.picsum.photos/id/1084/367/267.jpg?hmac=VaCZRCvuoubMR-S6bXItyxmDVwAaumZU2x1ulWE0faU",
-        "https://i.picsum.photos/id/219/367/267.jpg?hmac=S8RAgXxGj5AUho8KQ0hsjW8bhy1d-WunZNm77FCqC3w",
-      ],
-    },
-    {
-      name: "Food",
-      images: [
-        "https://images.unsplash.com/photo-1432139555190-58524dae6a55?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
-        "https://images.unsplash.com/photo-1506354666786-959d6d497f1a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
-        "https://images.unsplash.com/photo-1460306855393-0410f61241c7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
-        "https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
-      ],
-    },
-  ]);
-  const imgWidth = Dimensions.get("screen").width * 0.33333;
-  return (
-    <View style={{ flex: 1, backgroundColor: "#fff", paddingBottom: 20 }}>
-      {albums.map((album) => (
-        <TouchableOpacity style={{ flexDirection: "row", marginTop: 10 }}>
-          {album.images.map((img) => (
-            <Image
-              style={{ width: imgWidth + 50, height: imgWidth + 50 }}
-              source={{ uri: img }}
-            />
-          ))}
-          <View
-            style={{
-              position: "absolute",
-              bottom: 10,
-              left: 10,
-              backgroundColor: "#111",
-              paddingHorizontal: 10,
-              paddingVertical: 4,
-              borderRadius: 6,
-            }}
-          >
-            <Text style={{ color: "#fff", fontSize: 20 }}>{album.name}</Text>
-          </View>
-        </TouchableOpacity>
-      ))}
-    </View>
-  );
-}
-
-function Tags({ photos }) {
-  const imgWidth = Dimensions.get("screen").width * 0.33333;
-  return (
-    <View style={{}}>
-      <View
-        style={{
-          flexDirection: "row",
-          flexWrap: "wrap",
-          alignItems: "flex-start",
-        }}
-      >
-        {photos.map((photo, index) => (
-          <View>
-            <Image
-              style={{ width: imgWidth, height: imgWidth }}
-              source={{
-                uri: `https://picsum.photos/200/300?random=${index + 100}`,
-              }}
-            />
-          </View>
-        ))}
-      </View>
-    </View>
-  );
-}
-
+import { AntDesign } from "@expo/vector-icons";
+import LocalizationContext from "../../context/LocalizationProvider";
+import { Rating, AirbnbRating } from "react-native-elements";
+import { COLORS } from "../../constants";
+import { ScrollView } from "react-native-virtualized-view";
+import ListTag from "../../components/ListTag";
+import { Video, AVPlaybackStatus } from "expo-av";
 export default function ProfileScreen1() {
-  const [showContent, setShowContent] = useState("Photos");
+  const { i18n } = useContext(LocalizationContext);
+  const video = React.useRef(null);
+  const [status, setStatus] = React.useState({});
 
+  const listLanguages = ["English", "Math", "Physics"];
+  const listSpecialies = ["English", "Math", "Physics"];
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -146,27 +48,53 @@ export default function ProfileScreen1() {
               {/* Profile Name and Bio */}
               <View style={styles.nameAndBioView}>
                 <Text style={styles.userFullName}>{"Sophie Welch"}</Text>
-                <Text style={styles.userBio}>{"I love capturing photos"}</Text>
               </View>
+              <Rating
+                type="custom"
+                readonly={true}
+                startingValue={3}
+                style={{
+                  marginVertical: 1,
+                  alignSelf: "center",
+                }}
+                imageSize={20}
+                ratingBackgroundColor="transparent"
+              />
               {/* Posts/Followers/Following View */}
               <View style={styles.countsView}>
-                <View style={styles.countView}>
-                  <Text style={styles.countNum}>13</Text>
-                  <Text style={styles.countText}>Posts</Text>
+                <View
+                  style={{
+                    ...styles.countView,
+                    flex: 4,
+                    alignItems: "flex-start",
+                    marginLeft: 30,
+                  }}
+                >
+                  <Text style={styles.countText}>From Viet Nam</Text>
                 </View>
-                <View style={styles.countView}>
-                  <Text style={styles.countNum}>1246</Text>
-                  <Text style={styles.countText}>Followers</Text>
-                </View>
-                <View style={styles.countView}>
-                  <Text style={styles.countNum}>348</Text>
-                  <Text style={styles.countText}>Following</Text>
+                <View style={{ ...styles.countView, flex: 1 }}>
+                  <AntDesign name={"hearto"} size={24} color="blue" />
                 </View>
               </View>
+              {/* Video*/}
+              <Video
+                ref={video}
+                style={styles.video}
+                source={{
+                  uri: "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4",
+                }}
+                useNativeControls
+                resizeMode="contain"
+                isLooping
+                // onPlaybackStatusUpdate={(status) => setStatus(() => status)}
+              />
+
               {/* Interact Buttons View */}
               <View style={styles.interactButtonsView}>
                 <TouchableOpacity style={styles.interactButton}>
-                  <Text style={styles.interactButtonText}>Follow</Text>
+                  <Text style={styles.interactButtonText}>
+                    {i18n.t("Book")}
+                  </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={{
@@ -179,21 +107,82 @@ export default function ProfileScreen1() {
                   <Text
                     style={{ ...styles.interactButtonText, color: "#4b7bec" }}
                   >
-                    Message
+                    {i18n.t("Message")}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    ...styles.interactButton,
+                    flex: 1,
+                    backgroundColor: "white",
+                    borderWidth: 2,
+                    borderColor: "#4b7bec",
+                  }}
+                >
+                  <Text
+                    style={{
+                      ...styles.interactButtonText,
+                      color: "#4b7bec",
+                      textAlign: "center",
+                    }}
+                  >
+                    ...
                   </Text>
                 </TouchableOpacity>
               </View>
-              {/* Mutual Followed By Text */}
-              <View style={{ paddingHorizontal: 25, marginTop: 10 }}>
-                <Text style={{ fontSize: 16 }}>
-                  {"Followed by "}
-                  <Text>john_doe </Text>
-                  {"and "}
-                  <Text>19 others</Text>
-                </Text>
-              </View>
             </View>
             {/* Profile Content */}
+            <View style={styles.profileContent}>
+              <Text style={styles.headingParagraph}>{i18n.t("AboutMe")}</Text>
+              <Text style={styles.paragraph}>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris
+                nulla neque, scelerisque sit amet velit eu, vestibulum ultricies
+                odio.
+              </Text>
+              <Text style={styles.headingParagraph}>{i18n.t("Language")}</Text>
+              <View style={styles.tagItem}>
+                <ListTag tags={listLanguages} />
+              </View>
+              <Text style={styles.headingParagraph}>{i18n.t("Education")}</Text>
+              <Text style={styles.paragraph}>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris
+                nulla neque, scelerisque sit amet velit eu, vestibulum ultricies
+                odio.
+              </Text>
+              <Text style={styles.headingParagraph}>
+                {i18n.t("Expericence")}
+              </Text>
+              <Text style={styles.paragraph}>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris
+                nulla neque, scelerisque sit amet velit eu, vestibulum ultricies
+                odio.
+              </Text>
+              <Text style={styles.headingParagraph}>{i18n.t("Interests")}</Text>
+              <Text style={styles.paragraph}>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris
+                nulla neque, scelerisque sit amet velit eu, vestibulum ultricies
+                odio.
+              </Text>
+              <Text style={styles.headingParagraph}>
+                {i18n.t("Professional")}
+              </Text>
+              <Text style={styles.paragraph}>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris
+                nulla neque, scelerisque sit amet velit eu, vestibulum ultricies
+                odio.
+              </Text>
+              <Text style={styles.headingParagraph}>
+                {i18n.t("Specilities")}
+              </Text>
+              <View style={styles.tagItem}>
+                <ListTag tags={listSpecialies} />
+              </View>
+              <Text style={styles.headingParagraph}>{i18n.t("Course")}</Text>
+              <Text style={styles.paragraph}>No Data</Text>
+              <Text style={styles.headingParagraph}>
+                {i18n.t("RatingAndComment")}
+              </Text>
+            </View>
           </View>
         </>
       </ScrollView>
@@ -202,7 +191,7 @@ export default function ProfileScreen1() {
 }
 
 const styles = StyleSheet.create({
-  coverImage: { height: 300, width: "100%" },
+  coverImage: { height: 200, width: "100%" },
   profileContainer: {
     // height: 1000,
     backgroundColor: "#fff",
@@ -225,17 +214,23 @@ const styles = StyleSheet.create({
     color: "#333",
     marginTop: 4,
   },
-  countsView: { flexDirection: "row", marginTop: 20 },
+  countsView: {
+    flexDirection: "row",
+    marginTop: 20,
+    justifyContent: "space-between",
+    alignItems: "space-between",
+    width: "100%",
+  },
   countView: { flex: 1, alignItems: "center" },
   countNum: { fontSize: 20 },
-  countText: { fontSize: 18, color: "#333" },
+  countText: { fontSize: 18, color: "#333", justifyContent: "flex-start" },
   interactButtonsView: {
     flexDirection: "row",
     marginTop: 10,
     paddingHorizontal: 20,
   },
   interactButton: {
-    flex: 1,
+    flex: 2,
     flexDirection: "row",
     alignContent: "center",
     justifyContent: "center",
@@ -261,5 +256,25 @@ const styles = StyleSheet.create({
   },
   showContentButtonText: {
     fontSize: 18,
+  },
+  headingParagraph: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: COLORS.primary,
+    marginLeft: 30,
+    marginVertical: 5,
+  },
+  paragraph: {
+    fontSize: 15,
+    marginHorizontal: 35,
+    marginVertical: 5,
+  },
+  tagItem: {
+    marginVertical: 5,
+    marginHorizontal: 35,
+  },
+  video: {
+    width: "100%",
+    height: 200,
   },
 });

@@ -13,9 +13,9 @@ import { COLORS, IMGS, ROUTES } from "../constants";
 import { Rating, AirbnbRating } from "react-native-elements";
 import { useNavigation } from "@react-navigation/native";
 
-export default function TeacherCard() {
+export default function TeacherCard({ isLiked }) {
   const navigation = useNavigation();
-  const [followStatus, setFollowStatus] = useState(false);
+  const [followStatus, setFollowStatus] = useState(isLiked);
   const listSpecialies = [
     "English",
     "Math",
