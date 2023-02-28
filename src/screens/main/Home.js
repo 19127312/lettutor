@@ -13,7 +13,7 @@ import { COLORS, ROUTES } from "../../constants";
 export default function Home({ navigation }) {
   const { i18n } = useContext(LocalizationContext);
 
-  const arr = [1];
+  const arr = [1, 2, 3, 4];
   return (
     <View style={styles.container}>
       <View style={styles.banner}>
@@ -83,6 +83,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "bold",
     color: COLORS.primary,
+  },
+  title: {
+    fontSize: 15,
+    fontWeight: "bold",
   },
   seeMore: {
     fontSize: 12,

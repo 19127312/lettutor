@@ -7,7 +7,7 @@ import CourseCard from "../../components/CourseCard";
 export default function Courses() {
   const { i18n } = useContext(LocalizationContext);
   const [searchQuery, setSearchQuery] = useState("");
-  const arr = [];
+  const arr = [1, 2, 3, 4, 5];
 
   const onChangeSearch = (query) => setSearchQuery(query);
   return (

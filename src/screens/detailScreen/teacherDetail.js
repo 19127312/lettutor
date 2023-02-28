@@ -9,181 +9,278 @@ import {
   Dimensions,
   Button,
 } from "react-native";
+import Animated from "react-native-reanimated";
+import BottomSheet from "reanimated-bottom-sheet";
 import { AntDesign } from "@expo/vector-icons";
 import LocalizationContext from "../../context/LocalizationProvider";
 import { Rating, AirbnbRating } from "react-native-elements";
 import { COLORS } from "../../constants";
 import { ScrollView } from "react-native-virtualized-view";
 import ListTag from "../../components/ListTag";
+import CommentCard from "../../components/CommentCard";
+import BookingBottomSheet from "../../components/BookingBottomSheet";
 import { Video, AVPlaybackStatus } from "expo-av";
+import { Modal, Portal, Provider, TextInput } from "react-native-paper";
+import { FlatList } from "react-native-gesture-handler";
+
 export default function ProfileScreen1() {
   const { i18n } = useContext(LocalizationContext);
   const video = React.useRef(null);
+  const sheetRef = React.useRef(null);
 
+  const [visible, setVisible] = useState(false);
+  const [report, setReport] = useState("");
+  const [liked, setLiked] = useState(false);
+  const showModal = () => setVisible(true);
+  const hideModal = () => setVisible(false);
   const listLanguages = ["English", "Math", "Physics"];
   const listSpecialies = ["English", "Math", "Physics"];
+  const listRating = [1, 2, 3, 4, 5];
+  const sentReport = () => {
+    console.log(report);
+    hideModal();
+  };
+
+  const handleBooking = (item) => {
+    console.log(item);
+    sheetRef.current.snapTo(2);
+  };
+  const handleLike = () => {
+    setLiked(!liked);
+  };
+  const renderContent = () => (
+    <BookingBottomSheet onBooking={(item) => handleBooking(item)} />
+  );
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <>
-          <View>
-            <Image
-              style={styles.coverImage}
-              source={{ uri: "https://picsum.photos/500/500?random=211" }}
-            />
-          </View>
-          <View style={styles.profileContainer}>
-            {/* Profile Details */}
-            <View>
-              {/* Profile Image */}
-              <View style={styles.profileImageView}>
-                <Image
-                  style={styles.profileImage}
-                  source={{
-                    uri: "https://randomuser.me/api/portraits/women/46.jpg",
-                  }}
-                />
-              </View>
-              {/* Profile Name and Bio */}
-              <View style={styles.nameAndBioView}>
-                <Text style={styles.userFullName}>{"Sophie Welch"}</Text>
-              </View>
-              <Rating
-                type="custom"
-                readonly={true}
-                startingValue={3}
-                style={{
-                  marginVertical: 1,
-                  alignSelf: "center",
-                }}
-                imageSize={20}
-                ratingBackgroundColor="transparent"
-              />
-              {/* Posts/Followers/Following View */}
-              <View style={styles.countsView}>
-                <View
-                  style={{
-                    ...styles.countView,
-                    flex: 4,
-                    alignItems: "flex-start",
-                    marginLeft: 30,
-                  }}
-                >
-                  <Text style={styles.countText}>From Viet Nam</Text>
-                </View>
-                <View style={{ ...styles.countView, flex: 1 }}>
-                  <AntDesign name={"hearto"} size={24} color="blue" />
-                </View>
-              </View>
-              {/* Video*/}
-              <Video
-                ref={video}
-                style={styles.video}
-                source={{
-                  uri: "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4",
-                }}
-                useNativeControls
-                resizeMode="contain"
-                isLooping
-              />
+      <Provider>
+        {/* Report Modal */}
 
-              {/* Interact Buttons View */}
-              <View style={styles.interactButtonsView}>
-                <TouchableOpacity style={styles.interactButton}>
-                  <Text style={styles.interactButtonText}>
-                    {i18n.t("Book")}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
+        <Portal>
+          <Modal
+            visible={visible}
+            onDismiss={hideModal}
+            contentContainerStyle={styles.modalStyle}
+          >
+            <TextInput
+              mode="outlined"
+              style={styles.input}
+              value={report}
+              onChangeText={setReport}
+              name="Report"
+              label={i18n.t("Report")}
+              defaultValue=""
+              multiline={true}
+              numberOfLines={4}
+            />
+            <TouchableOpacity
+              style={{
+                ...styles.interactButton,
+                backgroundColor: "white",
+                borderWidth: 2,
+                borderColor: COLORS.danger,
+              }}
+              onPress={sentReport}
+            >
+              <Text
+                style={{ ...styles.interactButtonText, color: COLORS.danger }}
+              >
+                {i18n.t("Sent")}
+              </Text>
+            </TouchableOpacity>
+          </Modal>
+        </Portal>
+
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <>
+            <View>
+              <Image
+                style={styles.coverImage}
+                source={{ uri: "https://picsum.photos/500/500?random=211" }}
+              />
+            </View>
+            <View style={styles.profileContainer}>
+              {/* Profile Details */}
+              <View>
+                {/* Profile Image */}
+                <View style={styles.profileImageView}>
+                  <Image
+                    style={styles.profileImage}
+                    source={{
+                      uri: "https://randomuser.me/api/portraits/women/46.jpg",
+                    }}
+                  />
+                </View>
+                {/* Profile Name and Bio */}
+                <View style={styles.nameAndBioView}>
+                  <Text style={styles.userFullName}>{"Sophie Welch"}</Text>
+                </View>
+                <Rating
+                  type="custom"
+                  readonly={true}
+                  startingValue={3}
                   style={{
-                    ...styles.interactButton,
-                    backgroundColor: "white",
-                    borderWidth: 2,
-                    borderColor: "#4b7bec",
+                    marginVertical: 1,
+                    alignSelf: "center",
                   }}
-                >
-                  <Text
-                    style={{ ...styles.interactButtonText, color: "#4b7bec" }}
-                  >
-                    {i18n.t("Message")}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    ...styles.interactButton,
-                    flex: 1,
-                    backgroundColor: "white",
-                    borderWidth: 2,
-                    borderColor: "#4b7bec",
-                  }}
-                >
-                  <Text
+                  imageSize={20}
+                  ratingBackgroundColor="transparent"
+                />
+                {/* Book,Message, Report */}
+                <View style={styles.countsView}>
+                  <View
                     style={{
-                      ...styles.interactButtonText,
-                      color: "#4b7bec",
-                      textAlign: "center",
+                      ...styles.countView,
+                      flex: 4,
+                      alignItems: "flex-start",
+                      marginLeft: 30,
                     }}
                   >
-                    ...
-                  </Text>
-                </TouchableOpacity>
+                    <Text style={styles.countText}>From Viet Nam</Text>
+                  </View>
+                  <View style={{ ...styles.countView, flex: 1 }}>
+                    <TouchableOpacity onPress={handleLike}>
+                      <AntDesign
+                        name={liked ? "heart" : "hearto"}
+                        size={24}
+                        color="blue"
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                {/* Video*/}
+                <Video
+                  ref={video}
+                  style={styles.video}
+                  source={{
+                    uri: "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4",
+                  }}
+                  useNativeControls
+                  resizeMode="contain"
+                  isLooping
+                />
+
+                {/* Interact Buttons View */}
+                <View style={styles.interactButtonsView}>
+                  <TouchableOpacity
+                    style={styles.interactButton}
+                    onPress={() => sheetRef.current.snapTo(0)}
+                  >
+                    <Text style={styles.interactButtonText}>
+                      {i18n.t("Book")}
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{
+                      ...styles.interactButton,
+                      backgroundColor: "white",
+                      borderWidth: 2,
+                      borderColor: "#4b7bec",
+                    }}
+                  >
+                    <Text
+                      style={{ ...styles.interactButtonText, color: "#4b7bec" }}
+                    >
+                      {i18n.t("Message")}
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{
+                      ...styles.interactButton,
+                      flex: 1,
+                      backgroundColor: "white",
+                      borderWidth: 2,
+                      borderColor: "#4b7bec",
+                    }}
+                    onPress={showModal}
+                  >
+                    <Text
+                      style={{
+                        ...styles.interactButtonText,
+                        color: "#4b7bec",
+                        textAlign: "center",
+                      }}
+                    >
+                      ...
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              {/* Profile Content */}
+              <View style={styles.profileContent}>
+                <Text style={styles.headingParagraph}>{i18n.t("AboutMe")}</Text>
+                <Text style={styles.paragraph}>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Mauris nulla neque, scelerisque sit amet velit eu, vestibulum
+                  ultricies odio.
+                </Text>
+                <Text style={styles.headingParagraph}>
+                  {i18n.t("Language")}
+                </Text>
+                <View style={styles.tagItem}>
+                  <ListTag tags={listLanguages} />
+                </View>
+                <Text style={styles.headingParagraph}>
+                  {i18n.t("Education")}
+                </Text>
+                <Text style={styles.paragraph}>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Mauris nulla neque, scelerisque sit amet velit eu, vestibulum
+                  ultricies odio.
+                </Text>
+                <Text style={styles.headingParagraph}>
+                  {i18n.t("Expericence")}
+                </Text>
+                <Text style={styles.paragraph}>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Mauris nulla neque, scelerisque sit amet velit eu, vestibulum
+                  ultricies odio.
+                </Text>
+                <Text style={styles.headingParagraph}>
+                  {i18n.t("Interests")}
+                </Text>
+                <Text style={styles.paragraph}>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Mauris nulla neque, scelerisque sit amet velit eu, vestibulum
+                  ultricies odio.
+                </Text>
+                <Text style={styles.headingParagraph}>
+                  {i18n.t("Professional")}
+                </Text>
+                <Text style={styles.paragraph}>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Mauris nulla neque, scelerisque sit amet velit eu, vestibulum
+                  ultricies odio.
+                </Text>
+                <Text style={styles.headingParagraph}>
+                  {i18n.t("Specilities")}
+                </Text>
+                <View style={styles.tagItem}>
+                  <ListTag tags={listSpecialies} />
+                </View>
+                <Text style={styles.headingParagraph}>{i18n.t("Course")}</Text>
+                <Text style={styles.paragraph}>No Data</Text>
+                <Text style={styles.headingParagraph}>
+                  {i18n.t("RatingAndComment")}
+                </Text>
+                <FlatList
+                  data={listRating}
+                  renderItem={CommentCard}
+                  style={styles.commentList}
+                />
               </View>
             </View>
-            {/* Profile Content */}
-            <View style={styles.profileContent}>
-              <Text style={styles.headingParagraph}>{i18n.t("AboutMe")}</Text>
-              <Text style={styles.paragraph}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris
-                nulla neque, scelerisque sit amet velit eu, vestibulum ultricies
-                odio.
-              </Text>
-              <Text style={styles.headingParagraph}>{i18n.t("Language")}</Text>
-              <View style={styles.tagItem}>
-                <ListTag tags={listLanguages} />
-              </View>
-              <Text style={styles.headingParagraph}>{i18n.t("Education")}</Text>
-              <Text style={styles.paragraph}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris
-                nulla neque, scelerisque sit amet velit eu, vestibulum ultricies
-                odio.
-              </Text>
-              <Text style={styles.headingParagraph}>
-                {i18n.t("Expericence")}
-              </Text>
-              <Text style={styles.paragraph}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris
-                nulla neque, scelerisque sit amet velit eu, vestibulum ultricies
-                odio.
-              </Text>
-              <Text style={styles.headingParagraph}>{i18n.t("Interests")}</Text>
-              <Text style={styles.paragraph}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris
-                nulla neque, scelerisque sit amet velit eu, vestibulum ultricies
-                odio.
-              </Text>
-              <Text style={styles.headingParagraph}>
-                {i18n.t("Professional")}
-              </Text>
-              <Text style={styles.paragraph}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris
-                nulla neque, scelerisque sit amet velit eu, vestibulum ultricies
-                odio.
-              </Text>
-              <Text style={styles.headingParagraph}>
-                {i18n.t("Specilities")}
-              </Text>
-              <View style={styles.tagItem}>
-                <ListTag tags={listSpecialies} />
-              </View>
-              <Text style={styles.headingParagraph}>{i18n.t("Course")}</Text>
-              <Text style={styles.paragraph}>No Data</Text>
-              <Text style={styles.headingParagraph}>
-                {i18n.t("RatingAndComment")}
-              </Text>
-            </View>
-          </View>
-        </>
-      </ScrollView>
+          </>
+        </ScrollView>
+      </Provider>
+      <BottomSheet
+        ref={sheetRef}
+        snapPoints={[450, 300, 0]}
+        borderRadius={10}
+        renderContent={renderContent}
+        initialSnap={2}
+        enabledInnerScrolling={true}
+      />
     </View>
   );
 }
@@ -196,6 +293,10 @@ const styles = StyleSheet.create({
     marginTop: -100,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+  },
+  commentList: {
+    marginTop: 5,
+    marginHorizontal: 30,
   },
   profileImageView: { alignItems: "center", marginTop: -50 },
   profileImage: {
@@ -218,6 +319,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "space-between",
     width: "100%",
+    marginBottom: 10,
   },
   countView: { flex: 1, alignItems: "center" },
   countNum: { fontSize: 20 },
@@ -273,6 +375,11 @@ const styles = StyleSheet.create({
   },
   video: {
     width: "100%",
+    height: 200,
+  },
+  modalStyle: {
+    backgroundColor: "white",
+    padding: 20,
     height: 200,
   },
 });

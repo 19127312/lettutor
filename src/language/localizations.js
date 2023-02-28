@@ -60,6 +60,12 @@ const en = {
   Submit: "Submit",
   MySpecialities: "My Specialities",
   DoneStep: "You have completed the step, please wait for the approval",
+  TotalTimeLearning: "Total learned time",
+  UpcomingLession: "Upcoming Lession",
+  Cancel: "Cancel",
+  EnterLessionRoom: "Enter Lession Room",
+  Report: "Report",
+  Sent: "Sent",
 };
 const vi = {
   Language: "Ngôn ngữ",
@@ -124,6 +130,12 @@ const vi = {
   MySpecialities: "Chuyên môn của tôi",
   IntroduceYourself: "Giới thiệu bản thân",
   DoneStep: "Bạn đã hoàn thành bước này, vui lòng chờ duyệt",
+  TotalTimeLearning: "Tổng thời gian học",
+  UpcomingLession: "Lịch học sắp tới",
+  Cancel: "Hủy",
+  EnterLessionRoom: "Vào phòng học",
+  Report: "Báo cáo",
+  Sent: "Gửi",
 };
 
 export { en, vi };

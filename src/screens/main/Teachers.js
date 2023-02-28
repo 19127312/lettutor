@@ -23,7 +23,7 @@ export default function Teachers() {
     { label: "TOEFL", value: "TOEFL" },
     { label: "TOIEC", value: "TOIEC" },
   ]);
-  const arr = [];
+  const arr = [1, 2, 3, 4, 5, 6];
 
   return (
     <View style={styles.container}>
