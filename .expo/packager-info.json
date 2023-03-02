@@ -1,9 +1,9 @@
 {
-  "expoServerPort": null,
-  "packagerPort": null,
+  "expoServerPort": 19000,
+  "packagerPort": 19000,
   "packagerPid": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null,
+  "expoServerNgrokUrl": "https://qh-fhp.anonymous.lettutor.exp.direct",
+  "packagerNgrokUrl": "https://qh-fhp.anonymous.lettutor.exp.direct",
+  "ngrokPid": 15276,
   "webpackServerPort": null
 }

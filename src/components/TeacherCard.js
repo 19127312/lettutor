@@ -52,6 +52,7 @@ export default function TeacherCard({ isLiked }) {
                   imageSize={20}
                   ratingBackgroundColor="transparent"
                 />
+                <Image style={styles.flag} source={IMGS.vi} />
               </View>
             </View>
             <View style={styles.HeaderLeft}>
@@ -166,5 +167,9 @@ const styles = StyleSheet.create({
   nameContainer: {
     flexDirection: "column",
     marginLeft: 10,
+  },
+  flag: {
+    width: 30,
+    height: 20,
   },
 });

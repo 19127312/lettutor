@@ -23,7 +23,7 @@ import { Video, AVPlaybackStatus } from "expo-av";
 import { Modal, Portal, Provider, TextInput } from "react-native-paper";
 import { FlatList } from "react-native-gesture-handler";
 
-export default function ProfileScreen1() {
+export default function TeacherDetail() {
   const { i18n } = useContext(LocalizationContext);
   const video = React.useRef(null);
   const sheetRef = React.useRef(null);
@@ -229,7 +229,7 @@ export default function ProfileScreen1() {
                   ultricies odio.
                 </Text>
                 <Text style={styles.headingParagraph}>
-                  {i18n.t("Expericence")}
+                  {i18n.t("Experience")}
                 </Text>
                 <Text style={styles.paragraph}>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit.

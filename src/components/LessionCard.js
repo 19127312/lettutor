@@ -2,10 +2,14 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import React, { useState, useContext } from "react";
 import LocalizationContext from "../context/LocalizationProvider";
 
-import { COLORS, IMGS } from "../constants";
+import { COLORS, IMGS, ROUTES } from "../constants";
+import { useNavigation } from "@react-navigation/native";
 export default function LessionCard() {
+  const navigation = useNavigation();
   const { i18n } = useContext(LocalizationContext);
-
+  const handleEnterLession = () => {
+    navigation.navigate(ROUTES.VIDEO);
+  };
   return (
     <View style={styles.outerContainer}>
       <View style={styles.innerContainer}>
@@ -31,7 +35,10 @@ export default function LessionCard() {
             {i18n.t("Cancel")}
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.interactButton}>
+        <TouchableOpacity
+          style={styles.interactButton}
+          onPress={handleEnterLession}
+        >
           <Text style={styles.interactButtonText}>
             {i18n.t("EnterLessionRoom")}
           </Text>

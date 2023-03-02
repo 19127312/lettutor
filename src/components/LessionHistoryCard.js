@@ -1,11 +1,11 @@
 import { StyleSheet, Text, View, Image } from "react-native";
 import React, { useContext } from "react";
 import LocalizationContext from "../context/LocalizationProvider";
-
+import { TextInput } from "react-native-paper";
 import { COLORS, IMGS } from "../constants";
 export default function LessionHistoryCard() {
   const { i18n } = useContext(LocalizationContext);
-
+  const [review, setReview] = React.useState(i18n.t("NoReview"));
   return (
     <View style={styles.outerContainer}>
       <View style={styles.innerContainer}>
@@ -16,6 +16,14 @@ export default function LessionHistoryCard() {
           <Text style={styles.time}>3:30 - 4:30</Text>
         </View>
       </View>
+      <TextInput
+        value={review}
+        onChangeText={setReview}
+        name="review"
+        label="Review"
+        defaultValue={i18n.t("NoReview")}
+        disabled={true}
+      />
     </View>
   );
 }
@@ -38,7 +46,7 @@ const styles = StyleSheet.create({
   innerContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-between",
     marginHorizontal: 20,
     marginVertical: 20,
   },
@@ -50,7 +58,7 @@ const styles = StyleSheet.create({
     borderColor: "gray",
   },
   detailContainer: {
-    marginHorizontal: 20,
+    marginRight: 50,
   },
   name: {
     fontSize: 16,

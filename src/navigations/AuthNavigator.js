@@ -6,7 +6,7 @@ import {
   ForgotPassword,
   CourseDetail,
   TeacherDetail,
-  HistoryCourses,
+  Video,
 } from "../screens";
 import { ROUTES } from "../constants";
 import DrawerNavigator from "./DrawerNavigator";
@@ -39,6 +39,11 @@ function AuthNavigator() {
       <Stack.Screen
         name={ROUTES.TEACHER_DETAIL}
         component={TeacherDetail}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={ROUTES.VIDEO}
+        component={Video}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

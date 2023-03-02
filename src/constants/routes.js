@@ -23,4 +23,5 @@ export default {
   //Detail
   COURSE_DETAIL: "Course Detail",
   TEACHER_DETAIL: "Teacher Detail",
+  VIDEO: "Video",
 };

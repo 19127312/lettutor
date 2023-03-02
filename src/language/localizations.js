@@ -38,7 +38,7 @@ const en = {
   WhatWillYouBeAbleToDo: "What will you be able to do ?",
   AboutMe: "About Me",
   Education: "Education",
-  Experience: "Expericence",
+  Experience: "Experience",
   Interests: "Interests",
   Professional: "Professional",
   Course: "Course",
@@ -66,6 +66,7 @@ const en = {
   EnterLessionRoom: "Enter Lession Room",
   Report: "Report",
   Sent: "Sent",
+  NoReview: "No Review",
 };
 const vi = {
   Language: "Ngôn ngữ",
@@ -136,6 +137,7 @@ const vi = {
   EnterLessionRoom: "Vào phòng học",
   Report: "Báo cáo",
   Sent: "Gửi",
+  NoReview: "Không có đánh giá",
 };
 
 export { en, vi };
