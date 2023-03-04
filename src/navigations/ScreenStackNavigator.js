@@ -7,12 +7,13 @@ import {
   CourseDetail,
   TeacherDetail,
   Video,
+  PDFView,
 } from "../screens";
 import { ROUTES } from "../constants";
 import DrawerNavigator from "./DrawerNavigator";
 const Stack = createStackNavigator();
 
-function AuthNavigator() {
+function ScreenStackNavigator() {
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -46,8 +47,9 @@ function AuthNavigator() {
         component={Video}
         options={{ headerShown: false }}
       />
+      <Stack.Screen name={ROUTES.PDF_VIEW} component={PDFView} />
     </Stack.Navigator>
   );
 }
 
-export default AuthNavigator;
+export default ScreenStackNavigator;

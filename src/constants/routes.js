@@ -24,4 +24,5 @@ export default {
   COURSE_DETAIL: "Course Detail",
   TEACHER_DETAIL: "Teacher Detail",
   VIDEO: "Video",
+  PDF_VIEW: "PDF View",
 };

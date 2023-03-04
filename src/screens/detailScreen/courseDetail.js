@@ -7,14 +7,15 @@ import {
   FlatList,
 } from "react-native";
 import React, { useContext } from "react";
-import { COLORS } from "../../constants";
+import { COLORS, ROUTES } from "../../constants";
 import CourseBackground from "../../assets/CourseBackground.png";
 import CourseCard from "../../components/CourseCard";
 import LocalizationContext from "../../context/LocalizationProvider";
 import Icon from "react-native-vector-icons/Ionicons";
 import { ScrollView } from "react-native-virtualized-view";
-
+import { useNavigation } from "@react-navigation/native";
 export default function CourseDetail() {
+  const navigation = useNavigation();
   const { i18n } = useContext(LocalizationContext);
   const arr = ["He", "LO", "HI", "Ha", "hu", "He", "OK", "KO", "SD"];
   return (
@@ -88,7 +89,7 @@ export default function CourseDetail() {
           renderItem={({ item, index }) => (
             <Pressable
               onPress={() => {
-                console.log(item);
+                navigation.navigate(ROUTES.PDF_VIEW);
               }}
             >
               <View style={styles.itemTopic}>
