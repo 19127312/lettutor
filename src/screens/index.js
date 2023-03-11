@@ -7,6 +7,7 @@ export { default as Home } from "./main/Home";
 export { default as Teachers } from "./main/Teachers";
 export { default as Schedule } from "./main/Schedule";
 export { default as Courses } from "./main/Courses";
+export { default as Chat } from "./main/Chat";
 
 export { default as FavoriteTeachers } from "./drawer/FavoriteTeachers";
 export { default as BecomeTeacher } from "./drawer/BecomeTeacher";

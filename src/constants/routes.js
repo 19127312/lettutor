@@ -10,6 +10,7 @@ export default {
   SCHEDULE: "Schedule",
   HOME: "Home",
   HOME_TAB: "Home Tab",
+  CHAT: "Chat",
 
   // Drawer
   HOME_DRAWER: "Home Drawer",

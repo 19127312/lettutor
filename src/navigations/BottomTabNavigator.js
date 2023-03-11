@@ -1,7 +1,7 @@
 import React from "react";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Home, Courses, Schedule, Teachers } from "../screens";
+import { Home, Courses, Schedule, Teachers, Chat } from "../screens";
 import { ROUTES, COLORS } from "../constants";
 import Icon from "react-native-vector-icons/Ionicons";
 const Tab = createBottomTabNavigator();
@@ -35,6 +35,10 @@ function BottomTabNavigator() {
                   ? focused
                     ? "calendar"
                     : "calendar-outline"
+                  : route.name === ROUTES.CHAT
+                  ? focused
+                    ? "chatbubbles"
+                    : "chatbubbles-outline"
                   : focused
                   ? "people"
                   : "people-outline"
@@ -54,6 +58,7 @@ function BottomTabNavigator() {
       <Tab.Screen name={ROUTES.SCHEDULE} component={Schedule} />
       <Tab.Screen name={ROUTES.TEACHERS} component={Teachers} />
       <Tab.Screen name={ROUTES.COURSES} component={Courses} />
+      <Tab.Screen name={ROUTES.CHAT} component={Chat} />
     </Tab.Navigator>
   );
 }
