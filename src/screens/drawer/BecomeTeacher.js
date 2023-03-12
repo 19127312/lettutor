@@ -228,8 +228,8 @@ export default function BecomeTeacher() {
                 style={styles.input}
                 value={experience}
                 onChangeText={setExperience}
-                name="Expericence"
-                label={i18n.t("Expericence")}
+                name="Experience"
+                label={i18n.t("Experience")}
                 defaultValue=""
               />
             </View>
