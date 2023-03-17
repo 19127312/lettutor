@@ -5,15 +5,23 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import TeacherCard from "../../components/TeacherCard";
 import LocalizationContext from "../../context/LocalizationProvider";
 import { COLORS, ROUTES } from "../../constants";
-
+import { getListTutor } from "../../services/tutorAPI";
 export default function Home({ navigation }) {
   const { i18n } = useContext(LocalizationContext);
-
+  const [listTutor, setListTutor] = React.useState([]);
   const arr = [1, 2, 3, 4];
+  useEffect(() => {
+    async function fetchData() {
+      const response = await getListTutor(1, 1);
+      console.log(response.tutors);
+      setListTutor(response.tutors.rows);
+    }
+    fetchData();
+  }, []);
   return (
     <View style={styles.container}>
       <View style={styles.banner}>
@@ -38,8 +46,8 @@ export default function Home({ navigation }) {
         </TouchableOpacity>
       </View>
       <FlatList
-        data={arr}
-        renderItem={({ item }) => <TeacherCard />}
+        data={listTutor}
+        renderItem={({ item }) => <TeacherCard data={item} />}
         keyExtractor={(item) => item.toString()}
       />
     </View>

@@ -12,7 +12,7 @@ import { TextInput } from "react-native-paper";
 import logo from "../../assets/logo.png";
 import facebookLogo from "../../assets/facebookLogo.png";
 import googleLogo from "../../assets/googleLogo.png";
-
+import { register } from "../../services/authAPI";
 import { COLORS, ROUTES } from "../../constants";
 const Register = ({ navigation }) => {
   const [emailError, setemailError] = useState("");
@@ -40,8 +40,12 @@ const Register = ({ navigation }) => {
     if (emailError === "" && passwordError === "") {
       console.log(email);
       console.log(password);
-
-      console.log("register");
+      try {
+        const response = await register({ email, password });
+        console.log(response.data);
+      } catch (error) {
+        setloginError("Đăng ký thất bại");
+      }
     }
   }
 

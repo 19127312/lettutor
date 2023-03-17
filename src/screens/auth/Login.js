@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   Image,
   StyleSheet,
@@ -9,12 +9,14 @@ import {
 } from "react-native";
 import { TextInput } from "react-native-paper";
 
-import logo from "../../assets/logo.png";
 import facebookLogo from "../../assets/facebookLogo.png";
 import googleLogo from "../../assets/googleLogo.png";
 
 import { COLORS, ROUTES, IMGS } from "../../constants";
+import { login } from "../../services/authAPI";
+import AuthContext from "../../context/AuthProvider";
 export default Login = ({ navigation }) => {
+  const { setAuth } = useContext(AuthContext);
   const [emailError, setemailError] = useState("");
   const [loginError, setloginError] = useState("");
   const [passwordError, setPasswordError] = useState("");
@@ -23,47 +25,43 @@ export default Login = ({ navigation }) => {
   const [passwordVisible, setPasswordVisible] = useState(true);
 
   async function handleLogin() {
-    navigation.navigate(ROUTES.HOME);
+    setemailError("");
+    setPasswordError("");
+    setloginError("");
 
-    // setemailError("");
-    // setPasswordError("");
-    // setloginError("");
+    if (email === "") setemailError("Email không được để trống");
+    else {
+      let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+      if (reg.test(email) === false) setemailError("Email không đúng");
+    }
+    if (password === "") setPasswordError("Mật khẩu không được để trống");
 
-    // if (email === "") setemailError("Email không được để trống");
-    // else {
-    //   let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-    //   if (reg.test(email) === false) setemailError("Email không đúng");
-    // }
-    // if (password === "") setPasswordError("Mật khẩu không được để trống");
+    if (
+      emailError === "" &&
+      passwordError === "" &&
+      email !== "" &&
+      password !== ""
+    ) {
+      console.log(email);
+      console.log(password);
+      try {
+        const response = await login({ email, password });
+        if (response.data) {
+          setAuth(response.data);
 
-    // if (
-    //   emailError === "" &&
-    //   passwordError === "" &&
-    //   email !== "" &&
-    //   password !== ""
-    // ) {
-    //   console.log(email);
-    //   console.log(password);
+          console.log(response.data);
+          navigation.navigate(ROUTES.HOME);
+        } else {
+          setloginError("Đăng nhập thất bại");
+        }
+      } catch (error) {
+        console.log(error);
 
-    //   console.log("login");
-    // }
+        setloginError("Đăng nhập thất bại");
+      }
+    }
   }
 
-  // for login
-  // const deleteGroupMutation = useMutation(deleteGroup, {
-  //   onError: (error) => {
-  //
-  //   },
-  //   onSuccess: (response) => {
-  //      setAuth({ user, accessToken, refreshToken });
-  //   },Navigate
-  //   },
-  // });
-  // const handleOK = async () => {
-  //   await deleteGroupMutation.mutateAsync({
-  //     groupID: id,
-  //   });
-  // };
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <View style={styles.container}>
