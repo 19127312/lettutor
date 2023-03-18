@@ -1,19 +1,11 @@
 import React from "react";
-import {
-  Image,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  SafeAreaView,
-} from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 import SelectDropdown from "react-native-select-dropdown";
 import Icon from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useState, useContext } from "react";
 import LocalizationContext from "../../context/LocalizationProvider";
 import ThemeContext from "../../context/ThemeProvider";
-// import { EventRegister } from "react-native-event-listeners";
 export default function Settings() {
   const { i18n, setLocale } = useContext(LocalizationContext);
   const { themeData, setMode } = useContext(ThemeContext);

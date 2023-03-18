@@ -21,6 +21,7 @@ export default function Profile() {
   const { i18n } = useContext(LocalizationContext);
   const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
   const [img, setImg] = useState(IMGS.user);
+  const [hasImg, setHasImg] = useState(false);
   const { themeData } = useContext(ThemeContext);
   const [name, setName] = useState("Nguyen Van Ar");
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -79,12 +80,12 @@ export default function Profile() {
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [4, 4],
       quality: 1,
     });
-    if (!result.cancelled) {
-      setImg(result.uri);
+    if (!result.canceled) {
+      setImg(result.assets[0].uri);
+      setHasImg(true);
     }
   };
   if (hasGalleryPermission === null) {
@@ -95,7 +96,11 @@ export default function Profile() {
     >
       <View style={styles.imgContainer}>
         <TouchableOpacity onPress={() => pickImage()}>
-          <Image source={img} style={styles.userImg} />
+          {hasImg ? (
+            <Image source={{ uri: img }} style={styles.userImg} />
+          ) : (
+            <Image source={img} style={styles.userImg} />
+          )}
         </TouchableOpacity>
 
         {/* <Text style={styles.userName}>Kiet Tuong</Text> */}
@@ -244,50 +249,6 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 2,
     marginVertical: 10,
-  },
-  dropdown3BtnStyle: {
-    width: "90%",
-    height: 50,
-    backgroundColor: "#FFF",
-    paddingHorizontal: 5,
-    borderWidth: 1,
-    borderRadius: 8,
-    borderColor: "#444",
-    marginVertical: 10,
-  },
-  dropdown3BtnChildStyle: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 10,
-  },
-  dropdown3BtnImage: { width: 30, height: 30, resizeMode: "cover" },
-  dropdown3BtnTxt: {
-    color: "#444",
-    textAlign: "center",
-    fontSize: 12,
-  },
-  dropdown3DropdownStyle: { backgroundColor: "slategray" },
-  dropdown3RowStyle: {
-    backgroundColor: "slategray",
-    borderBottomColor: "#444",
-    height: 35,
-  },
-  dropdown3RowChildStyle: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    paddingHorizontal: 18,
-  },
-  dropdownRowImage: { width: 30, height: 30, resizeMode: "cover" },
-  dropdown3RowTxt: {
-    color: "#F1F1F1",
-    textAlign: "center",
-    fontWeight: "bold",
-    fontSize: 15,
-    marginHorizontal: 12,
   },
   dropdownmulti: {
     marginVertical: 10,

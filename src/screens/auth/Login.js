@@ -13,7 +13,7 @@ import logo from "../../assets/logo.png";
 import facebookLogo from "../../assets/facebookLogo.png";
 import googleLogo from "../../assets/googleLogo.png";
 
-import { COLORS, ROUTES } from "../../constants";
+import { COLORS, ROUTES, IMGS } from "../../constants";
 export default Login = ({ navigation }) => {
   const [emailError, setemailError] = useState("");
   const [loginError, setloginError] = useState("");
@@ -68,7 +68,11 @@ export default Login = ({ navigation }) => {
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <View style={styles.container}>
         <View style={styles.header}>
-          <Image style={styles.logo} source={logo} resizeMode="contain"></Image>
+          <Image
+            style={styles.logo}
+            source={IMGS.logo}
+            resizeMode="contain"
+          ></Image>
         </View>
 
         <View style={styles.authentication}>

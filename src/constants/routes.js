@@ -10,6 +10,7 @@ export default {
   SCHEDULE: "Schedule",
   HOME: "Home",
   HOME_TAB: "Home Tab",
+  CHAT: "Chat",
 
   // Drawer
   HOME_DRAWER: "Home Drawer",
@@ -19,4 +20,10 @@ export default {
   LOGOUT: "Logout",
   HISTORY_COURSES: "History Courses",
   PROFILE: "Profile",
+
+  //Detail
+  COURSE_DETAIL: "Course Detail",
+  TEACHER_DETAIL: "Teacher Detail",
+  VIDEO: "Video",
+  PDF_VIEW: "PDF View",
 };
