@@ -1,30 +1,21 @@
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Image,
-  Pressable,
-} from "react-native";
+import { StyleSheet, Text, View, Image, Pressable } from "react-native";
 import React, { useState } from "react";
 import ListTag from "./ListTag";
 import { AntDesign } from "@expo/vector-icons";
 import { COLORS, IMGS, ROUTES } from "../constants";
-import { Rating, AirbnbRating } from "react-native-elements";
+import { Rating } from "react-native-elements";
 import { useNavigation } from "@react-navigation/native";
-
+import { getSpecialitiesListLabel } from "../business/handleTagSpecialities";
 export default function TeacherCard({ data, isLiked }) {
   //Name, avatar, rating, tags, price, isLiked
   const navigation = useNavigation();
   const [followStatus, setFollowStatus] = useState(isLiked);
-  const listSpecialies = data.specialties.split(",");
-
+  const listSpecialies = getSpecialitiesListLabel(data.specialties.split(","));
   return (
     <View style={styles.outerContainer}>
       <Pressable
         onPress={() => {
-          console.log("Press");
-          navigation.navigate(ROUTES.TEACHER_DETAIL);
+          navigation.navigate(ROUTES.TEACHER_DETAIL, { data });
         }}
         style={{ flex: 1 }}
       >

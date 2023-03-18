@@ -1,15 +1,17 @@
 import { View, Text, StyleSheet, FlatList } from "react-native";
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import TeacherCard from "../../components/TeacherCard";
 import LocalizationContext from "../../context/LocalizationProvider";
 import { Searchbar } from "react-native-paper";
 import DropDownPicker from "react-native-dropdown-picker";
+import { getListTutor } from "../../services/tutorAPI";
 
 export default function Teachers() {
   const { i18n } = useContext(LocalizationContext);
   const [searchQuery, setSearchQuery] = useState("");
 
   const onChangeSearch = (query) => setSearchQuery(query);
+  const [listTutor, setListTutor] = React.useState([]);
 
   const [openCourses, setOpenCourses] = useState(false);
   const [valueCourses, setValueCourses] = useState([]);
@@ -23,8 +25,16 @@ export default function Teachers() {
     { label: "TOEFL", value: "TOEFL" },
     { label: "TOIEC", value: "TOIEC" },
   ]);
-  const arr = [1, 2, 3, 4, 5, 6];
-
+  useEffect(() => {
+    async function fetchData() {
+      const response = await getListTutor(1, 60);
+      const data = response.tutors.rows.filter((item) => {
+        return item.avatar != null && item.level != null;
+      });
+      setListTutor(data);
+    }
+    fetchData();
+  }, []);
   return (
     <View style={styles.container}>
       <Searchbar
@@ -56,9 +66,9 @@ export default function Teachers() {
         ]}
       />
       <FlatList
-        data={arr}
-        renderItem={({ item }) => <TeacherCard />}
-        keyExtractor={(item) => item.toString()}
+        data={listTutor}
+        renderItem={({ item }) => <TeacherCard data={item} />}
+        keyExtractor={(item) => item.id}
       />
     </View>
   );

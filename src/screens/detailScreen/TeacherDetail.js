@@ -22,8 +22,11 @@ import BookingBottomSheet from "../../components/BookingBottomSheet";
 import { Video, AVPlaybackStatus } from "expo-av";
 import { Modal, Portal, Provider, TextInput } from "react-native-paper";
 import { FlatList } from "react-native-gesture-handler";
-
-export default function TeacherDetail() {
+import { getSpecialitiesListLabel } from "../../business/handleTagSpecialities";
+import { getLanguagesListLabel } from "../../business/handleTagLanguage";
+export default function TeacherDetail({ route }) {
+  const { data } = route.params;
+  console.log(data);
   const { i18n } = useContext(LocalizationContext);
   const video = React.useRef(null);
   const sheetRef = React.useRef(null);
@@ -33,9 +36,9 @@ export default function TeacherDetail() {
   const [liked, setLiked] = useState(false);
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
-  const listLanguages = ["English", "Math", "Physics"];
-  const listSpecialies = ["English", "Math", "Physics"];
-  const listRating = [1, 2, 3, 4, 5];
+  const listLanguages = getLanguagesListLabel(data.languages.split(","));
+  const listSpecialies = getSpecialitiesListLabel(data.specialties.split(","));
+  const listRating = data.feedbacks;
   const sentReport = () => {
     console.log(report);
     hideModal();
@@ -107,18 +110,18 @@ export default function TeacherDetail() {
                   <Image
                     style={styles.profileImage}
                     source={{
-                      uri: "https://randomuser.me/api/portraits/women/46.jpg",
+                      uri: data.avatar,
                     }}
                   />
                 </View>
                 {/* Profile Name and Bio */}
                 <View style={styles.nameAndBioView}>
-                  <Text style={styles.userFullName}>{"Sophie Welch"}</Text>
+                  <Text style={styles.userFullName}>{data.name}</Text>
                 </View>
                 <Rating
                   type="custom"
                   readonly={true}
-                  startingValue={3}
+                  startingValue={data.rating}
                   style={{
                     marginVertical: 1,
                     alignSelf: "center",
@@ -136,7 +139,7 @@ export default function TeacherDetail() {
                       marginLeft: 30,
                     }}
                   >
-                    <Text style={styles.countText}>From Viet Nam</Text>
+                    <Text style={styles.countText}>From {data.country}</Text>
                   </View>
                   <View style={{ ...styles.countView, flex: 1 }}>
                     <TouchableOpacity onPress={handleLike}>
@@ -153,7 +156,7 @@ export default function TeacherDetail() {
                   ref={video}
                   style={styles.video}
                   source={{
-                    uri: "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4",
+                    uri: data.video,
                   }}
                   useNativeControls
                   resizeMode="contain"
@@ -209,11 +212,7 @@ export default function TeacherDetail() {
               {/* Profile Content */}
               <View style={styles.profileContent}>
                 <Text style={styles.headingParagraph}>{i18n.t("AboutMe")}</Text>
-                <Text style={styles.paragraph}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Mauris nulla neque, scelerisque sit amet velit eu, vestibulum
-                  ultricies odio.
-                </Text>
+                <Text style={styles.paragraph}>{data.bio}</Text>
                 <Text style={styles.headingParagraph}>
                   {i18n.t("Language")}
                 </Text>
@@ -223,35 +222,19 @@ export default function TeacherDetail() {
                 <Text style={styles.headingParagraph}>
                   {i18n.t("Education")}
                 </Text>
-                <Text style={styles.paragraph}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Mauris nulla neque, scelerisque sit amet velit eu, vestibulum
-                  ultricies odio.
-                </Text>
+                <Text style={styles.paragraph}>{data.education}</Text>
                 <Text style={styles.headingParagraph}>
                   {i18n.t("Experience")}
                 </Text>
-                <Text style={styles.paragraph}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Mauris nulla neque, scelerisque sit amet velit eu, vestibulum
-                  ultricies odio.
-                </Text>
+                <Text style={styles.paragraph}>{data.experience}</Text>
                 <Text style={styles.headingParagraph}>
                   {i18n.t("Interests")}
                 </Text>
-                <Text style={styles.paragraph}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Mauris nulla neque, scelerisque sit amet velit eu, vestibulum
-                  ultricies odio.
-                </Text>
+                <Text style={styles.paragraph}>{data.interests}</Text>
                 <Text style={styles.headingParagraph}>
                   {i18n.t("Professional")}
                 </Text>
-                <Text style={styles.paragraph}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Mauris nulla neque, scelerisque sit amet velit eu, vestibulum
-                  ultricies odio.
-                </Text>
+                <Text style={styles.paragraph}>{data.profession}</Text>
                 <Text style={styles.headingParagraph}>
                   {i18n.t("Specilities")}
                 </Text>
@@ -265,7 +248,7 @@ export default function TeacherDetail() {
                 </Text>
                 <FlatList
                   data={listRating}
-                  renderItem={CommentCard}
+                  renderItem={({ item }) => <CommentCard data={item} />}
                   style={styles.commentList}
                 />
               </View>

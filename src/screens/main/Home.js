@@ -13,12 +13,13 @@ import { getListTutor } from "../../services/tutorAPI";
 export default function Home({ navigation }) {
   const { i18n } = useContext(LocalizationContext);
   const [listTutor, setListTutor] = React.useState([]);
-  const arr = [1, 2, 3, 4];
   useEffect(() => {
     async function fetchData() {
-      const response = await getListTutor(1, 1);
-      console.log(response.tutors);
-      setListTutor(response.tutors.rows);
+      const response = await getListTutor(1, 60);
+      const data = response.tutors.rows.filter((item) => {
+        return item.level != null;
+      });
+      setListTutor(data);
     }
     fetchData();
   }, []);
@@ -48,7 +49,7 @@ export default function Home({ navigation }) {
       <FlatList
         data={listTutor}
         renderItem={({ item }) => <TeacherCard data={item} />}
-        keyExtractor={(item) => item.toString()}
+        keyExtractor={(item) => item.id}
       />
     </View>
   );

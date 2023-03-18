@@ -8,7 +8,7 @@ export default function ListTag({ tags }) {
     <FlatList
       listKey={moment().valueOf().toString()}
       columnWrapperStyle={styles.listTag}
-      numColumns={10}
+      numColumns={20}
       data={tags}
       renderItem={TagItem}
       keyExtractor={(item) => item}
