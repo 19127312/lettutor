@@ -8,8 +8,9 @@ api.interceptors.request.use(
   async (config) => {
     const accessToken = await AsyncStorage.getItem("accessToken");
     if (accessToken) {
-      console.log("accessToken", accessToken);
       config.headers.Authorization = `Bearer ${accessToken}`;
+    } else {
+      await AsyncStorage.removeItem("accessToken");
     }
     return config;
   },
@@ -36,16 +37,21 @@ export const refreshAccessToken = async () => {
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const config = error?.config;
-    const newAccessToken = await refreshAccessToken();
-    if (newAccessToken) {
-      await AsyncStorage.setItem("accessToken", newAccessToken);
-      config.headers = {
-        ...config.headers,
-        authorization: `Bearer ${newAccessToken}`,
-      };
+    if (error?.response?.status === 401 || error?.response?.status === 403) {
+      const config = error?.config;
+      const newAccessToken = await refreshAccessToken();
+      if (newAccessToken) {
+        await AsyncStorage.setItem("accessToken", newAccessToken);
+        config.headers = {
+          ...config.headers,
+          authorization: `Bearer ${newAccessToken}`,
+        };
+      }
+      return axios(config);
+    } else {
+      await AsyncStorage.removeItem("accessToken");
     }
-    return axios(config);
+    return Promise.reject(error);
 
     // return Promise.reject(error);
   }

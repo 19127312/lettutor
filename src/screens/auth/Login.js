@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   Image,
   StyleSheet,
@@ -15,6 +15,8 @@ import googleLogo from "../../assets/googleLogo.png";
 import { COLORS, ROUTES, IMGS } from "../../constants";
 import { login } from "../../services/authAPI";
 import AuthContext from "../../context/AuthProvider";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 export default Login = ({ navigation }) => {
   const { setAuth } = useContext(AuthContext);
   const [emailError, setemailError] = useState("");
@@ -23,7 +25,15 @@ export default Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(true);
-
+  useEffect(() => {
+    async function getAccessToken() {
+      const accessToken = await AsyncStorage.getItem("accessToken");
+      if (accessToken) {
+        navigation.navigate(ROUTES.HOME);
+      }
+    }
+    getAccessToken();
+  }, []);
   async function handleLogin() {
     setemailError("");
     setPasswordError("");
@@ -42,14 +52,11 @@ export default Login = ({ navigation }) => {
       email !== "" &&
       password !== ""
     ) {
-      console.log(email);
-      console.log(password);
       try {
         const response = await login({ email, password });
         if (response.data) {
           setAuth(response.data);
 
-          console.log(response.data);
           navigation.navigate(ROUTES.HOME);
         } else {
           setloginError("Đăng nhập thất bại");

@@ -1,31 +1,25 @@
 import React, { useState, useContext, useRef } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Image,
-  ActivityIndicator,
-  Dimensions,
-  Button,
-} from "react-native";
-import Animated from "react-native-reanimated";
+import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import BottomSheet from "reanimated-bottom-sheet";
 import { AntDesign } from "@expo/vector-icons";
 import LocalizationContext from "../../context/LocalizationProvider";
-import { Rating, AirbnbRating } from "react-native-elements";
+import BookingContext from "../../context/BookingProvider";
+import { Rating } from "react-native-elements";
 import { COLORS } from "../../constants";
 import { ScrollView } from "react-native-virtualized-view";
 import ListTag from "../../components/ListTag";
 import CommentCard from "../../components/CommentCard";
 import BookingBottomSheet from "../../components/BookingBottomSheet";
-import { Video, AVPlaybackStatus } from "expo-av";
+import { Video } from "expo-av";
 import { Modal, Portal, Provider, TextInput } from "react-native-paper";
 import { FlatList } from "react-native-gesture-handler";
 import { getSpecialitiesListLabel } from "../../business/handleTagSpecialities";
 import { getLanguagesListLabel } from "../../business/handleTagLanguage";
 import { favorAction } from "../../services/tutorAPI";
+// import { reportAction } from "../../services/tutorAPI";
+import { upcomingBooking } from "../../mock_data/booking";
 export default function TeacherDetail({ route }) {
+  const { setUpcomingBooking } = useContext(BookingContext);
   const { data, isLiked } = route.params;
   const { i18n } = useContext(LocalizationContext);
   const video = React.useRef(null);
@@ -39,13 +33,34 @@ export default function TeacherDetail({ route }) {
   const listLanguages = getLanguagesListLabel(data.languages.split(","));
   const listSpecialies = getSpecialitiesListLabel(data.specialties.split(","));
   const listRating = data.feedbacks;
-  const sentReport = () => {
+
+  const sentReport = async () => {
     console.log(report);
+    // const response = await reportAction(report, data.userId);
+    // if (response.message == "Report successfully") {
+    //   alert("Report successfully");
+    // }
     hideModal();
   };
-
   const handleBooking = (item) => {
     console.log(item);
+
+    setUpcomingBooking((pre) => {
+      return [
+        ...pre,
+        {
+          id: Date.now(),
+          time: "8:00 AM",
+          date: item,
+          teacher: {
+            id: data.id,
+            userId: data.userId,
+            name: data.name,
+            avatar: data.avatar,
+          },
+        },
+      ];
+    });
     sheetRef.current.snapTo(2);
   };
   const handleLike = async () => {

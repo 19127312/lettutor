@@ -7,19 +7,26 @@ import {
 } from "react-native";
 import React from "react";
 import { COLORS } from "../constants";
+function createDateArray() {
+  const dateArray = [];
+  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  const today = new Date();
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(today);
+    date.setDate(today.getDate() + i);
+    const dayOfWeek = daysOfWeek[date.getDay()];
+    const monthName = date.toLocaleDateString("default", { month: "long" });
+    const dateString = `${dayOfWeek} ${monthName}`;
+    dateArray.push(dateString);
+  }
+  return dateArray;
+}
 export default function BookingBottomSheet({ onBooking }) {
-  const arr = [
-    "Fri,29 April 2023, 08:00 PM",
-    "Sat,30 April 2023, 08:00 PM",
-    "Sun,31 April 2023, 08:00 PM",
-    "Mon,01 May 2023, 08:00 PM",
-    "Tue,02 May 2023, 08:00 PM",
-    "Wed,03 May 2023, 08:00 PM",
-    "Thu,04 May 2023, 08:00 PM",
-  ];
+  const arr = createDateArray();
   const renderItem = (item) => (
     <TouchableOpacity style={styles.button} onPress={() => handleBooking(item)}>
-      <Text style={styles.buttonText}> {item} </Text>
+      <Text style={styles.buttonText}> {item} 8:00AM </Text>
     </TouchableOpacity>
   );
   const handleBooking = (index) => {
