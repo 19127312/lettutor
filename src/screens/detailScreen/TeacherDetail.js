@@ -26,7 +26,6 @@ import { getSpecialitiesListLabel } from "../../business/handleTagSpecialities";
 import { getLanguagesListLabel } from "../../business/handleTagLanguage";
 export default function TeacherDetail({ route }) {
   const { data } = route.params;
-  console.log(data);
   const { i18n } = useContext(LocalizationContext);
   const video = React.useRef(null);
   const sheetRef = React.useRef(null);
