@@ -17,9 +17,8 @@ import { getSpecialitiesListLabel } from "../../business/handleTagSpecialities";
 import { getLanguagesListLabel } from "../../business/handleTagLanguage";
 import { favorAction } from "../../services/tutorAPI";
 // import { reportAction } from "../../services/tutorAPI";
-import { upcomingBooking } from "../../mock_data/booking";
 export default function TeacherDetail({ route }) {
-  const { setUpcomingBooking } = useContext(BookingContext);
+  const { upcomingBooking, setUpcomingBooking } = useContext(BookingContext);
   const { data, isLiked } = route.params;
   const { i18n } = useContext(LocalizationContext);
   const video = React.useRef(null);
@@ -43,8 +42,6 @@ export default function TeacherDetail({ route }) {
     hideModal();
   };
   const handleBooking = (item) => {
-    console.log(item);
-
     setUpcomingBooking((pre) => {
       return [
         ...pre,

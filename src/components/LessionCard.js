@@ -4,20 +4,32 @@ import LocalizationContext from "../context/LocalizationProvider";
 
 import { COLORS, IMGS, ROUTES } from "../constants";
 import { useNavigation } from "@react-navigation/native";
-export default function LessionCard() {
+export default function LessionCard({ data, onDelete }) {
   const navigation = useNavigation();
   const { i18n } = useContext(LocalizationContext);
   const handleEnterLession = () => {
-    navigation.navigate(ROUTES.VIDEO);
+    navigation.navigate(ROUTES.VIDEO, { data });
+  };
+  const handleDeleteLesson = () => {
+    const currentHour = new Date().getHours();
+
+    // Convert 8:00 AM to 24-hour format
+    const targetHour = 8;
+    // Check if the current hour is less than 2 hours away from the target hour
+    if (targetHour - currentHour <= 2 && targetHour - currentHour > 0) {
+      alert("You can't delete this lesson");
+    } else {
+      onDelete(data.id);
+    }
   };
   return (
     <View style={styles.outerContainer}>
       <View style={styles.innerContainer}>
-        <Image style={styles.avtimg} source={IMGS.user} />
+        <Image style={styles.avtimg} source={{ uri: data.teacher.avatar }} />
         <View style={styles.detailContainer}>
-          <Text style={styles.name}>Teacher Seeeee</Text>
-          <Text style={styles.date}>20-02-2002</Text>
-          <Text style={styles.time}>3:30 - 4:30</Text>
+          <Text style={styles.name}>{data.teacher.name}</Text>
+          <Text style={styles.date}>{data.date}</Text>
+          <Text style={styles.time}>{data.time} - 10:00AM</Text>
         </View>
       </View>
 
@@ -30,6 +42,7 @@ export default function LessionCard() {
             borderColor: COLORS.danger,
             flex: 1,
           }}
+          onPress={() => handleDeleteLesson()}
         >
           <Text style={{ ...styles.interactButtonText, color: COLORS.danger }}>
             {i18n.t("Cancel")}
