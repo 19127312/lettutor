@@ -9,4 +9,5 @@ export default {
   ph: require("../assets/ph.png"),
   tw: require("../assets/tw.png"),
   global: require("../assets/global.png"),
+  empty: require("../assets/empty.png"),
 };

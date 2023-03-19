@@ -67,6 +67,7 @@ const en = {
   Report: "Report",
   Sent: "Sent",
   NoReview: "No Review",
+  NoResult: "No Result",
 };
 const vi = {
   Language: "Ngôn ngữ",
@@ -138,6 +139,7 @@ const vi = {
   Report: "Báo cáo",
   Sent: "Gửi",
   NoReview: "Không có đánh giá",
+  NoResult: "Không có kết quả",
 };
 
 export { en, vi };

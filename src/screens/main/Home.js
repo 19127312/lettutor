@@ -17,7 +17,6 @@ export default function Home({ navigation }) {
   useEffect(() => {
     async function fetchData() {
       const response = await getListTutor(1, 60);
-      console.log(response.favoriteTutor);
       setFavoriteTutor(() => {
         const newListID = response.favoriteTutor.map((item) => item.secondId);
         return newListID;
