@@ -24,15 +24,16 @@ import { Modal, Portal, Provider, TextInput } from "react-native-paper";
 import { FlatList } from "react-native-gesture-handler";
 import { getSpecialitiesListLabel } from "../../business/handleTagSpecialities";
 import { getLanguagesListLabel } from "../../business/handleTagLanguage";
+import { favorAction } from "../../services/tutorAPI";
 export default function TeacherDetail({ route }) {
-  const { data } = route.params;
+  const { data, isLiked } = route.params;
   const { i18n } = useContext(LocalizationContext);
   const video = React.useRef(null);
   const sheetRef = React.useRef(null);
 
   const [visible, setVisible] = useState(false);
   const [report, setReport] = useState("");
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(isLiked);
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
   const listLanguages = getLanguagesListLabel(data.languages.split(","));
@@ -47,8 +48,9 @@ export default function TeacherDetail({ route }) {
     console.log(item);
     sheetRef.current.snapTo(2);
   };
-  const handleLike = () => {
+  const handleLike = async () => {
     setLiked(!liked);
+    await favorAction(data.id);
   };
   const renderContent = () => (
     <BookingBottomSheet onBooking={(item) => handleBooking(item)} />

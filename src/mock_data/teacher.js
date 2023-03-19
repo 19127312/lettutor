@@ -162,3 +162,11 @@ export const tutor = [
       "https://sandbox.api.lettutor.com/video/f64bca88-80fb-479d-a9d1-66fd326cfa45video1641245785756.mp4",
   },
 ];
+export const favoriteTutors = [
+  {
+    secondId: "6ca5c092-76ea-4e72-9c6e-05e2239aa33b",
+  },
+  {
+    secondId: "0356fb75-f10c-4f15-a87c-b7ada058688b",
+  },
+];

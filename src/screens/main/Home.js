@@ -13,9 +13,16 @@ import { getListTutor } from "../../services/tutorAPI";
 export default function Home({ navigation }) {
   const { i18n } = useContext(LocalizationContext);
   const [listTutor, setListTutor] = React.useState([]);
+  const [favoriteTutor, setFavoriteTutor] = React.useState([]);
   useEffect(() => {
     async function fetchData() {
       const response = await getListTutor(1, 60);
+      console.log(response.favoriteTutor);
+      setFavoriteTutor(() => {
+        const newListID = response.favoriteTutor.map((item) => item.secondId);
+        return newListID;
+      });
+
       const data = response.tutors.rows.filter((item) => {
         return item.level != null;
       });
@@ -23,6 +30,7 @@ export default function Home({ navigation }) {
     }
     fetchData();
   }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.banner}>
@@ -48,7 +56,9 @@ export default function Home({ navigation }) {
       </View>
       <FlatList
         data={listTutor}
-        renderItem={({ item }) => <TeacherCard data={item} />}
+        renderItem={({ item }) => (
+          <TeacherCard data={item} isLiked={favoriteTutor.includes(item.id)} />
+        )}
         keyExtractor={(item) => item.id}
       />
     </View>

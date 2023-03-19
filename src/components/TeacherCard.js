@@ -6,16 +6,17 @@ import { COLORS, IMGS, ROUTES } from "../constants";
 import { Rating } from "react-native-elements";
 import { useNavigation } from "@react-navigation/native";
 import { getSpecialitiesListLabel } from "../business/handleTagSpecialities";
+import { favorAction } from "../services/tutorAPI";
 export default function TeacherCard({ data, isLiked }) {
-  //Name, avatar, rating, tags, price, isLiked
   const navigation = useNavigation();
   const [followStatus, setFollowStatus] = useState(isLiked);
   const listSpecialies = getSpecialitiesListLabel(data.specialties.split(","));
+
   return (
     <View style={styles.outerContainer}>
       <Pressable
         onPress={() => {
-          navigation.navigate(ROUTES.TEACHER_DETAIL, { data });
+          navigation.navigate(ROUTES.TEACHER_DETAIL, { data, isLiked });
         }}
         style={{ flex: 1 }}
       >
@@ -43,9 +44,9 @@ export default function TeacherCard({ data, isLiked }) {
             <View style={styles.HeaderLeft}>
               <Pressable
                 style={styles.btnFollow}
-                onPress={() => {
-                  console.log("Press follow");
+                onPress={async () => {
                   setFollowStatus(!followStatus);
+                  await favorAction(data.id);
                 }}
               >
                 <AntDesign
