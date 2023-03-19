@@ -7,11 +7,11 @@ import { Rating } from "react-native-elements";
 import { useNavigation } from "@react-navigation/native";
 import { getSpecialitiesListLabel } from "../business/handleTagSpecialities";
 import { favorAction } from "../services/tutorAPI";
+import { getFlag } from "../business/handleFlag";
 export default function TeacherCard({ data, isLiked }) {
   const navigation = useNavigation();
   const [followStatus, setFollowStatus] = useState(isLiked);
   const listSpecialies = getSpecialitiesListLabel(data.specialties.split(","));
-
   return (
     <View style={styles.outerContainer}>
       <Pressable
@@ -38,7 +38,7 @@ export default function TeacherCard({ data, isLiked }) {
                   imageSize={20}
                   ratingBackgroundColor="transparent"
                 />
-                <Image style={styles.flag} source={IMGS.vi} />
+                <Image style={styles.flag} source={getFlag(data.country)} />
               </View>
             </View>
             <View style={styles.HeaderLeft}>
