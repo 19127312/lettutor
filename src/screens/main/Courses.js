@@ -1,14 +1,17 @@
 import { View, Text, StyleSheet, FlatList } from "react-native";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import LocalizationContext from "../../context/LocalizationProvider";
 import { Searchbar } from "react-native-paper";
 import CourseCard from "../../components/CourseCard";
-
+import { courses } from "../../mock_data/courses";
 export default function Courses() {
   const { i18n } = useContext(LocalizationContext);
   const [searchQuery, setSearchQuery] = useState("");
+  const [dataCourse, setDataCourse] = useState([]);
   const arr = [1, 2, 3, 4, 5];
-
+  useEffect(() => {
+    setDataCourse(courses);
+  }, []);
   const onChangeSearch = (query) => setSearchQuery(query);
   return (
     <View style={styles.container}>
@@ -19,9 +22,9 @@ export default function Courses() {
         style={styles.searchBar}
       />
       <FlatList
-        data={arr}
-        renderItem={({ item }) => <CourseCard />}
-        keyExtractor={(item) => item.toString()}
+        data={dataCourse}
+        renderItem={({ item }) => <CourseCard data={item} />}
+        keyExtractor={(item) => item.id}
         numColumns={2}
         style={styles.flatList}
       />

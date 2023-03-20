@@ -84,7 +84,7 @@ export function BookingProvider({ children }) {
   const today = new Date();
   const newBookings = initialUpcomingBookings.map((booking, index) => {
     const date = new Date(today);
-    date.setDate(today.getDate() + index);
+    date.setDate(today.getDate() + index + 1);
     const dayOfWeek = daysOfWeek[date.getDay()];
     const monthName = date.toLocaleDateString("default", { month: "long" });
     return {

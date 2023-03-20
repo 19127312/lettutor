@@ -4,27 +4,25 @@ import { COLORS, ROUTES } from "../constants";
 import CourseBackground from "../assets/CourseBackground.png";
 import { useNavigation } from "@react-navigation/native";
 
-export default function CourseCard({ style }) {
+export default function CourseCard({ style, data }) {
   const navigation = useNavigation();
   return (
     <View style={[styles.gridItem, style]}>
       <Pressable
         onPress={() => {
           console.log("Press card");
-          navigation.navigate(ROUTES.COURSE_DETAIL);
+          navigation.navigate(ROUTES.COURSE_DETAIL, { data });
         }}
         style={{ flex: 1 }}
       >
         <View style={styles.innerContainer}>
-          <Image source={CourseBackground} style={styles.courseImg} />
+          <Image source={{ uri: data.imageUrl }} style={styles.courseImg} />
 
-          <Text style={styles.nameCourse}>CourseCard</Text>
-          <Text style={styles.subtitle}>
-            This is a subtitle pla pla pla pla pla pla pla pla pla pla
-          </Text>
+          <Text style={styles.nameCourse}>{data.name}</Text>
+          <Text style={styles.subtitle}>{data.description}</Text>
           <View style={styles.levelContainer}>
-            <Text style={styles.levelText}>Beginner</Text>
-            <Text style={styles.levelText}>9 bài học</Text>
+            <Text style={styles.levelText}>Level {data.level}</Text>
+            <Text style={styles.levelText}>{data.topics.length} lessons</Text>
           </View>
         </View>
       </Pressable>
@@ -40,7 +38,7 @@ const styles = StyleSheet.create({
   gridItem: {
     flex: 1,
     margin: 5,
-    height: 240,
+    height: 260,
     borderRadius: 8,
     elevation: 4,
     shadowColor: "black",
@@ -59,10 +57,13 @@ const styles = StyleSheet.create({
   nameCourse: {
     fontSize: 16,
     fontWeight: "bold",
+    textAlign: "center",
   },
   subtitle: {
     fontSize: 12,
     fontWeight: "300",
+    flex: 1,
+    textAlign: "center",
   },
   levelText: {
     fontSize: 14,
@@ -74,5 +75,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
+    alignSelf: "flex-end",
   },
 });

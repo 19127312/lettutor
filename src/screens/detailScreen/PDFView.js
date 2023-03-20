@@ -2,12 +2,13 @@ import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import PDFReader from "rn-pdf-reader-js";
 
-export default function PDFView() {
+export default function PDFView({ route }) {
+  const { data } = route.params;
   return (
     <View style={styles.container}>
       <PDFReader
         source={{
-          uri: "http://www.pdf995.com/samples/pdf.pdf",
+          uri: data.nameFile,
         }}
       />
     </View>
