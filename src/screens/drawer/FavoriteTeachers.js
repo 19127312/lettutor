@@ -1,4 +1,4 @@
-// import { getListTutor } from "../../services/tutorAPI";
+import { getListTutor } from "../../services/tutorAPI";
 import { View, Text, StyleSheet, FlatList } from "react-native";
 import React, { useContext, useState, useEffect } from "react";
 import ThemeContext from "../../context/ThemeProvider";
@@ -10,21 +10,19 @@ export default function FavoriteTeachers() {
   const [favoriteTutor, setFavoriteTutor] = React.useState([]);
   useEffect(() => {
     async function fetchData() {
-      const response = tutor;
+      const response = await getListTutor(1, 60);
+      const newListID = response.favoriteTutor.map((item) => item.secondId);
 
       setFavoriteTutor(() => {
-        // const newListID = response.favoriteTutor.map((item) => item.secondId);
-        const newListID = favoriteTutors.map((item) => item.secondId);
-
         return newListID;
       });
-
-      // const data = response.tutors.rows.filter((item) => {
-      //   return item.level != null;
-      // });
-      const data = tutor.filter((item) => {
-        return item.level != null;
+      let data = response.tutors.rows.filter((item) => {
+        return item.avatar != null && item.level != null;
       });
+      data = data.filter((item) => {
+        return newListID.includes(item.id);
+      });
+
       setListTutor(data);
     }
     fetchData();
