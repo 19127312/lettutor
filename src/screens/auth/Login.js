@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from "react-native";
+import * as WebBrowser from "expo-web-browser";
+import * as Google from "expo-auth-session/providers/google";
 import { TextInput } from "react-native-paper";
 
 import facebookLogo from "../../assets/facebookLogo.png";
@@ -16,7 +18,7 @@ import { COLORS, ROUTES, IMGS } from "../../constants";
 import { login } from "../../services/authAPI";
 import AuthContext from "../../context/AuthProvider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+WebBrowser.maybeCompleteAuthSession();
 export default Login = ({ navigation }) => {
   const { setAuth } = useContext(AuthContext);
   const [emailError, setemailError] = useState("");
@@ -25,6 +27,13 @@ export default Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(true);
+  const [accessToken, setAccessToken] = useState(null);
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    clientId:
+      "237722397720-hkdm7tjfm427d97fnv5d9dqbrh8pgknb.apps.googleusercontent.com",
+    androidClientId:
+      "237722397720-49fdld1mvtihjsg044gjlheljmhgfdru.apps.googleusercontent.com",
+  });
   useEffect(() => {
     async function getAccessToken() {
       const accessToken = await AsyncStorage.getItem("accessToken");
@@ -34,6 +43,13 @@ export default Login = ({ navigation }) => {
     }
     getAccessToken();
   }, []);
+
+  useEffect(() => {
+    if (response?.type === "success") {
+      const { authentication } = response;
+      console.log(authentication?.accessToken);
+    }
+  }, [accessToken, response]);
   async function handleLogin() {
     setemailError("");
     setPasswordError("");
@@ -69,6 +85,15 @@ export default Login = ({ navigation }) => {
     }
   }
 
+  const googleLogin = () => {
+    console.log(
+      "237722397720-hkdm7tjfm427d97fnv5d9dqbrh8pgknb.apps.googleusercontent.com"
+    );
+    console.log(
+      "237722397720-49fdld1mvtihjsg044gjlheljmhgfdru.apps.googleusercontent.com"
+    );
+    promptAsync();
+  };
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <View style={styles.container}>
@@ -147,7 +172,7 @@ export default Login = ({ navigation }) => {
                       resizeMode="contain"
                     />
                   </TouchableOpacity>
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={googleLogin}>
                     <Image
                       style={styles.otherLoginIcon}
                       source={googleLogo}
