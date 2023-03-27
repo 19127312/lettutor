@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, FlatList } from "react-native";
 import React, { useContext, useState, useEffect } from "react";
 import ThemeContext from "../../context/ThemeProvider";
 import TeacherCard from "../../components/TeacherCard";
-import { tutor, favoriteTutors } from "../../mock_data/teacher";
 export default function FavoriteTeachers() {
   const { themeData } = useContext(ThemeContext);
   const [listTutor, setListTutor] = React.useState([]);

@@ -38,11 +38,9 @@ const Register = ({ navigation }) => {
       setPasswordError("Xác nhận mật khẩu không đúng");
 
     if (emailError === "" && passwordError === "") {
-      console.log(email);
-      console.log(password);
       try {
         const response = await register({ email, password });
-        console.log(response.data);
+        navigation.navigate(ROUTES.LOGIN);
       } catch (error) {
         setloginError("Đăng ký thất bại");
       }

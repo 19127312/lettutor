@@ -10,6 +10,7 @@ import {
 import { TextInput } from "react-native-paper";
 import logo from "../../assets/logo.png";
 import { COLORS, ROUTES } from "../../constants";
+import { forgotPassword } from "../../services/authAPI";
 
 const ForgotPassword = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -26,9 +27,9 @@ const ForgotPassword = ({ navigation }) => {
     }
 
     if (emailError === "") {
-      console.log(email);
-      console.log("forgot password");
       setSuccessState(true);
+      forgotPassword({ email });
+      navigation.navigate(ROUTES.LOGIN);
     }
   }
 

@@ -3,6 +3,7 @@ const PATH = {
   LOGIN: "/auth/login",
   REGISTER: "/auth/register",
   GOOGLE_LOGIN: "/auth/google",
+  FORGOT_PASSWORD: "/user/forgotPassword",
 };
 export const login = async ({ email, password }) => {
   try {
@@ -16,6 +17,15 @@ export const login = async ({ email, password }) => {
 export const register = async ({ email, password }) => {
   try {
     const response = await api.post(PATH.REGISTER, { email, password });
+    return response;
+  } catch (error) {
+    throw Error(error);
+  }
+};
+
+export const forgotPassword = async ({ email }) => {
+  try {
+    const response = await api.post(PATH.FORGOT_PASSWORD, { email });
     return response;
   } catch (error) {
     throw Error(error);
