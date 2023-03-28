@@ -7,6 +7,7 @@ export function AuthProvider({ children }) {
   const [auth, setAuth] = useState();
   useEffect(() => {
     async function storeTokens() {
+      console.log(auth.tokens.access.token);
       await AsyncStorage.setItem("accessToken", auth.tokens.access.token);
       await AsyncStorage.setItem("refreshToken", auth.tokens.refresh.token);
     }

@@ -15,7 +15,7 @@ import facebookLogo from "../../assets/facebookLogo.png";
 import googleLogo from "../../assets/googleLogo.png";
 
 import { COLORS, ROUTES, IMGS } from "../../constants";
-import { login } from "../../services/authAPI";
+import { googleLoginAuth, login } from "../../services/authAPI";
 import AuthContext from "../../context/AuthProvider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 WebBrowser.maybeCompleteAuthSession();
@@ -45,10 +45,19 @@ export default Login = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    if (response?.type === "success") {
-      const { authentication } = response;
-      console.log(authentication?.accessToken);
+    async function ggLogin() {
+      if (response?.type === "success") {
+        const { authentication } = response;
+        if (authentication?.accessToken) {
+          const response = await googleLoginAuth({
+            accessToken: authentication.accessToken,
+          });
+          setAuth(response.data);
+          navigation.navigate(ROUTES.HOME);
+        }
+      }
     }
+    ggLogin();
   }, [accessToken, response]);
   async function handleLogin() {
     setemailError("");
@@ -86,12 +95,6 @@ export default Login = ({ navigation }) => {
   }
 
   const googleLogin = () => {
-    console.log(
-      "237722397720-hkdm7tjfm427d97fnv5d9dqbrh8pgknb.apps.googleusercontent.com"
-    );
-    console.log(
-      "237722397720-49fdld1mvtihjsg044gjlheljmhgfdru.apps.googleusercontent.com"
-    );
     promptAsync();
   };
   return (

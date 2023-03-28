@@ -31,3 +31,15 @@ export const forgotPassword = async ({ email }) => {
     throw Error(error);
   }
 };
+
+export const googleLoginAuth = async ({ accessToken }) => {
+  try {
+    const response = await api.post(PATH.GOOGLE_LOGIN, {
+      access_token: accessToken,
+    });
+    return response;
+  } catch (error) {
+    console.log(error.data);
+    throw Error(error);
+  }
+};

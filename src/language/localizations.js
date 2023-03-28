@@ -20,6 +20,7 @@ const en = {
   Country: "Country",
   SelectLevel: "Select Level",
   Beginner: "Beginner",
+  HigherBeginner: "Higher Beginner",
   Intermediate: "Intermediate",
   Advanced: "Advanced",
   Update: "Update",
@@ -140,6 +141,7 @@ const vi = {
   Sent: "Gửi",
   NoReview: "Không có đánh giá",
   NoResult: "Không có kết quả",
+  HigherBeginner: "Cao hơn bắt đầu",
 };
 
 export { en, vi };

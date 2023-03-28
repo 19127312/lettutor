@@ -15,9 +15,11 @@ import moment from "moment";
 import LocalizationContext from "../../context/LocalizationProvider";
 import DropDownPicker from "react-native-dropdown-picker";
 import * as ImagePicker from "expo-image-picker";
+import { getUserInfo, updateUser } from "../../services/userAPI";
 const { width } = Dimensions.get("screen");
 
 export default function Profile() {
+  const [user, setUser] = useState(null);
   const { i18n } = useContext(LocalizationContext);
   const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
   const [img, setImg] = useState(IMGS.user);
@@ -33,21 +35,29 @@ export default function Profile() {
   const [openCountry, setOpenCountry] = useState(false);
   const [valueCountry, setValueCountry] = useState([]);
   const [itemsCountry, setItemsCountry] = useState([
-    { label: "vi", value: "vi" },
-    { label: "en", value: "en" },
+    { label: "VN", value: "VN" },
+    { label: "USA", value: "USA" },
   ]);
 
   const [openLevel, setOpenLevel] = useState(false);
   const [valueLevel, setValueLevel] = useState([]);
   const [itemsLevel, setItemsLevel] = useState([
-    { label: i18n.t("Beginner"), value: i18n.t("Beginner") },
-    { label: i18n.t("Intermediate"), value: i18n.t("Intermediate") },
-    { label: i18n.t("Advanced"), value: i18n.t("Advanced") },
+    { label: i18n.t("Beginner"), value: "BEGINNER" },
+    { label: i18n.t("Intermediate"), value: "INTERMEDIATE" },
+    { label: i18n.t("Advanced"), value: "ADVANCED" },
+    { label: i18n.t("HigherBeginner"), value: "HIGHER_BEGINNER" },
   ]);
 
   const [openCourses, setOpenCourses] = useState(false);
   const [valueCourses, setValueCourses] = useState([]);
   const [itemsCourses, setItemsCourses] = useState([
+    { label: "English for Kids", value: "english-for-kids", id: "3" },
+    { label: "Business English", value: "business-english", id: "4" },
+    {
+      label: "Conversational English",
+      value: "conversational-english",
+      id: "5",
+    },
     { label: "STARTERS", value: "STARTERS" },
     { label: "MOVERS", value: "MOVERS" },
     { label: "FLYERS", value: "FLYERS" },
@@ -58,6 +68,22 @@ export default function Profile() {
     { label: "TOIEC", value: "TOIEC" },
   ]);
 
+  useEffect(() => {
+    async function getUser() {
+      const { data } = await getUserInfo();
+      setUser(data.user);
+      setValueCountry(data.user.country);
+      setValueLevel(data.user.level);
+      setValueCourses(() => {
+        let arr = [];
+        data.user.learnTopics.map((item) => {
+          arr.push(item.key);
+        });
+        return arr;
+      });
+    }
+    getUser();
+  }, []);
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -90,6 +116,25 @@ export default function Profile() {
   };
   if (hasGalleryPermission === null) {
   }
+  const updateInfo = async () => {
+    let arrLearnTopics = [];
+    for (let i = 0; i < valueCourses.length; i++) {
+      arrLearnTopics.push({
+        id: itemsCourses.find((item) => item.value === valueCourses[i]).id,
+      });
+    }
+    arrLearnTopics = arrLearnTopics.map((item) => {
+      return item.id;
+    });
+    await updateUser({
+      name,
+      country: valueCountry,
+      birthday: moment(birthDate).format("YYYY-MM-DD"),
+      phone,
+      level: valueLevel,
+      learnTopics: arrLearnTopics,
+    });
+  };
   return (
     <View
       style={[styles.container, { backgroundColor: themeData.backgroundColor }]}
@@ -98,17 +143,19 @@ export default function Profile() {
         <TouchableOpacity onPress={() => pickImage()}>
           {hasImg ? (
             <Image source={{ uri: img }} style={styles.userImg} />
+          ) : user ? (
+            <Image source={{ uri: user.avatar }} style={styles.userImg} />
           ) : (
             <Image source={img} style={styles.userImg} />
           )}
         </TouchableOpacity>
 
         {/* <Text style={styles.userName}>Kiet Tuong</Text> */}
-        <Text style={styles.userEmail}>abc@gmail.com</Text>
+        <Text style={styles.userEmail}>{user?.email}</Text>
         <TextInput
           mode="outlined"
           style={styles.input}
-          value={name}
+          value={user?.name}
           onChangeText={setName}
           name="name"
           label="Tên"
@@ -119,7 +166,7 @@ export default function Profile() {
           <TextInput
             mode="outlined"
             style={styles.input}
-            value={moment(birthDate).format("DD MMMM, YYYY")}
+            value={moment(user?.birthday).format("DD MMMM, YYYY")}
             name="dob"
             label="Ngày sinh"
             editable={false}
@@ -148,7 +195,7 @@ export default function Profile() {
         <TextInput
           mode="outlined"
           style={styles.input}
-          value={phone}
+          value={user?.phone}
           onChangeText={setPhone}
           name="SDT"
           label="SDT"
@@ -200,7 +247,7 @@ export default function Profile() {
             "#e9c46a",
           ]}
         />
-        <TouchableOpacity style={styles.updateButton}>
+        <TouchableOpacity style={styles.updateButton} onPress={updateInfo}>
           <Text style={styles.updateButtonText}> {i18n.t("Update")}</Text>
         </TouchableOpacity>
       </View>
