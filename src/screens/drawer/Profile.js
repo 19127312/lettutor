@@ -15,7 +15,7 @@ import moment from "moment";
 import LocalizationContext from "../../context/LocalizationProvider";
 import DropDownPicker from "react-native-dropdown-picker";
 import * as ImagePicker from "expo-image-picker";
-import { getUserInfo, updateUser } from "../../services/userAPI";
+import { getUserInfo, updateUser, uploadAvatar } from "../../services/userAPI";
 const { width } = Dimensions.get("screen");
 
 export default function Profile() {
@@ -133,6 +133,27 @@ export default function Profile() {
       phone,
       level: valueLevel,
       learnTopics: arrLearnTopics,
+    });
+    let formData = new FormData();
+    console.log(img);
+    formData.append("avatar", {
+      uri: img,
+    });
+
+    await uploadAvatar(formData).catch((error) => {
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.log(error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.log("Error", error.message);
+      }
+      console.log(error.config);
     });
   };
   return (

@@ -37,7 +37,7 @@ export const refreshAccessToken = async () => {
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error?.response?.status === 401 || error?.response?.status === 403) {
+    if (error?.response?.status === 401) {
       const config = error?.config;
       const newAccessToken = await refreshAccessToken();
       if (newAccessToken) {
@@ -48,8 +48,6 @@ api.interceptors.response.use(
         };
       }
       return axios(config);
-    } else {
-      await AsyncStorage.removeItem("accessToken");
     }
     return Promise.reject(error);
 
