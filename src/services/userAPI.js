@@ -33,7 +33,11 @@ export const becomeTeacher = async (data) => {
 
 export const uploadAvatar = async (data) => {
   try {
-    const response = await api.pose(PATH.UPLOAD_AVATAR, data);
+    const response = await api.post(PATH.UPLOAD_AVATAR, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response;
   } catch (error) {
     throw Error(error);

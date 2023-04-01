@@ -16,6 +16,8 @@ import LocalizationContext from "../../context/LocalizationProvider";
 import DropDownPicker from "react-native-dropdown-picker";
 import * as ImagePicker from "expo-image-picker";
 import { getUserInfo, updateUser, uploadAvatar } from "../../services/userAPI";
+import mime from "mime";
+
 const { width } = Dimensions.get("screen");
 
 export default function Profile() {
@@ -135,11 +137,13 @@ export default function Profile() {
       learnTopics: arrLearnTopics,
     });
     let formData = new FormData();
-    console.log(img);
-    formData.append("avatar", {
-      uri: img,
-    });
+    const newImageUri = "file:///" + img.split("file:/").join("");
 
+    formData.append("avatar", {
+      uri: newImageUri,
+      type: mime.getType(newImageUri),
+      name: newImageUri.split("/").pop(),
+    });
     await uploadAvatar(formData).catch((error) => {
       if (error.response) {
         // The request was made and the server responded with a status code
