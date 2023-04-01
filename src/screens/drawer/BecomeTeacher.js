@@ -20,7 +20,8 @@ import { Video } from "expo-av";
 import { TextInput } from "react-native-paper";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { getUserInfo, becomeTeacher } from "../../services/userAPI";
-getUserInfo;
+import mime from "mime";
+
 export default function BecomeTeacher() {
   const [user, setUser] = useState(null);
 
@@ -145,6 +146,12 @@ export default function BecomeTeacher() {
     formData.append("profession", profession);
     formData.append("bio", introduction);
     formData.append("languages", language);
+    const newImageUri = "file:///" + img.split("file:/").join("");
+    formData.append("avatar", {
+      uri: newImageUri,
+      type: mime.getType(newImageUri),
+      name: newImageUri.split("/").pop(),
+    });
     // formData.append("video", {
     //   uri: videoUri,
     //   type: "video/mp4",
