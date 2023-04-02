@@ -78,6 +78,7 @@ export default function Profile() {
       setUser(data.user);
       setValueCountry(data.user.country);
       setValueLevel(data.user.level);
+      setBirthDate(moment(data.user.birthday).format("YYYY-MM-DD"));
       setValueCourses(() => {
         let arr = [];
         data.user.learnTopics.map((item) => {
@@ -95,7 +96,6 @@ export default function Profile() {
   const hideDatePicker = () => {
     setDatePickerVisibility(false);
   };
-
   const handleConfirm = (date) => {
     setBirthDate(date);
     hideDatePicker();
@@ -138,19 +138,21 @@ export default function Profile() {
       level: valueLevel,
       learnTopics: arrLearnTopics,
     });
-    let formData = new FormData();
-    const newImageUri = "file:///" + img.split("file:/").join("");
-    formData.append("avatar", {
-      uri: newImageUri,
-      type: mime.getType(newImageUri),
-      name: newImageUri.split("/").pop(),
-    });
-    try {
-      await uploadAvatar(formData);
+    if (hasImg) {
+      let formData = new FormData();
+      const newImageUri = "file:///" + img.split("file:/").join("");
+      formData.append("avatar", {
+        uri: newImageUri,
+        type: mime.getType(newImageUri),
+        name: newImageUri.split("/").pop(),
+      });
+      try {
+        await uploadAvatar(formData);
 
-      setAvatar((prev) => !prev);
-    } catch (err) {
-      console.log(err);
+        setAvatar((prev) => !prev);
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
   return (
@@ -184,7 +186,7 @@ export default function Profile() {
           <TextInput
             mode="outlined"
             style={styles.input}
-            value={moment(user?.birthday).format("DD MMMM, YYYY")}
+            value={moment(birthDate).format("DD MMMM, YYYY")}
             name="dob"
             label="Ngày sinh"
             editable={false}
