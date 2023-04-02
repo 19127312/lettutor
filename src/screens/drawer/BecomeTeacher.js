@@ -13,16 +13,17 @@ import { StepperContainer, StepView } from "@material.ui/react-native-stepper";
 import LocalizationContext from "../../context/LocalizationProvider";
 import DropDownPicker from "react-native-dropdown-picker";
 import * as ImagePicker from "expo-image-picker";
-import { COLORS, IMGS } from "../../constants";
+import { COLORS, IMGS, ROUTES } from "../../constants";
 import moment from "moment";
 import { Video } from "expo-av";
-
+import { useNavigation } from "@react-navigation/native";
 import { TextInput } from "react-native-paper";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { getUserInfo, becomeTeacher } from "../../services/userAPI";
 import mime from "mime";
 
 export default function BecomeTeacher() {
+  const navigation = useNavigation();
   const [user, setUser] = useState(null);
 
   const { i18n } = useContext(LocalizationContext);
@@ -175,7 +176,7 @@ export default function BecomeTeacher() {
     formData.append("price", 50000);
     await becomeTeacher(formData).catch((err) => {
       {
-        console.log(err);
+        navigation.navigate(ROUTES.HOME_TAB);
       }
     });
   };

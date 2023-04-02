@@ -3,7 +3,10 @@ import { View, Text, StyleSheet, FlatList } from "react-native";
 import React, { useContext, useState, useEffect } from "react";
 import ThemeContext from "../../context/ThemeProvider";
 import TeacherCard from "../../components/TeacherCard";
+import AvatarContext from "../../context/AvatarProvider";
+import { use } from "i18next";
 export default function FavoriteTeachers() {
+  const { avatar } = useContext(AvatarContext);
   const { themeData } = useContext(ThemeContext);
   const [listTutor, setListTutor] = React.useState([]);
   const [favoriteTutor, setFavoriteTutor] = React.useState([]);
@@ -25,8 +28,7 @@ export default function FavoriteTeachers() {
       setListTutor(data);
     }
     fetchData();
-  }, []);
-
+  }, [avatar]);
   return (
     <View
       style={[styles.container, { backgroundColor: themeData.backgroundColor }]}

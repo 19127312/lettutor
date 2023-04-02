@@ -8,14 +8,29 @@ export default function Courses() {
   const { i18n } = useContext(LocalizationContext);
   const [searchQuery, setSearchQuery] = useState("");
   const [dataCourse, setDataCourse] = useState([]);
+  const [page, setPage] = useState(1);
+  async function fetchData(page) {
+    const response = await getListCourse({ page: page, search: "" });
+    setDataCourse([...dataCourse, ...response.data.data.rows]);
+  }
   useEffect(() => {
-    async function fetchData() {
-      const response = await getListCourse();
-      setDataCourse(response.data.data.rows);
-    }
-    fetchData();
+    fetchData(1);
   }, []);
+
+  useEffect(() => {
+    if (searchQuery == "") {
+      fetchData(1);
+    }
+  }, [searchQuery]);
   const onChangeSearch = (query) => setSearchQuery(query);
+  const handleSearch = async () => {
+    const response = await getListCourse({ page: 1, search: searchQuery });
+    if (response.data.data.rows.length > 0) {
+      setDataCourse(response.data.data.rows);
+    } else {
+      setDataCourse([]);
+    }
+  };
   return (
     <View style={styles.container}>
       <Searchbar
@@ -23,6 +38,7 @@ export default function Courses() {
         onChangeText={onChangeSearch}
         value={searchQuery}
         style={styles.searchBar}
+        onIconPress={handleSearch}
       />
       <FlatList
         data={dataCourse}
@@ -30,6 +46,11 @@ export default function Courses() {
         keyExtractor={(item) => item.id}
         numColumns={2}
         style={styles.flatList}
+        onEndReachedThreshold={0.5}
+        onEndReached={() => {
+          setPage(page + 1);
+          fetchData(page + 1);
+        }}
       />
     </View>
   );

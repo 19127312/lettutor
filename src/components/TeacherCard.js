@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Image, Pressable } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import ListTag from "./ListTag";
 import { AntDesign } from "@expo/vector-icons";
 import { COLORS, IMGS, ROUTES } from "../constants";
@@ -7,8 +7,10 @@ import { Rating } from "react-native-elements";
 import { useNavigation } from "@react-navigation/native";
 import { getSpecialitiesListLabel } from "../business/handleTagSpecialities";
 import { favorAction } from "../services/tutorAPI";
+import AvatarContext from "../context/AvatarProvider";
 import { getFlag } from "../business/handleFlag";
 export default function TeacherCard({ data, isLiked }) {
+  const { setAvatar } = useContext(AvatarContext);
   const navigation = useNavigation();
   const [followStatus, setFollowStatus] = useState(isLiked);
   const listSpecialies = getSpecialitiesListLabel(data.specialties.split(","));
@@ -46,6 +48,7 @@ export default function TeacherCard({ data, isLiked }) {
                 style={styles.btnFollow}
                 onPress={async () => {
                   setFollowStatus(!followStatus);
+                  setAvatar((pre) => !pre);
                   await favorAction(data.id);
                 }}
               >
