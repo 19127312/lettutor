@@ -14,6 +14,7 @@ export const getUserInfo = async () => {
 };
 
 export const updateUser = async (data) => {
+  console.log("data", data);
   try {
     const response = await api.put(PATH.USER_INFO, data);
     return response;
@@ -23,10 +24,17 @@ export const updateUser = async (data) => {
 };
 
 export const becomeTeacher = async (data) => {
+  console.log("data", data);
   try {
-    const response = await api.put("/tutor/register", data);
+    const response = await api.post("/tutor/register", data, {
+      headers: {
+        "Content-Type": "apllication/json",
+      },
+    });
+    console.log("response", response);
     return response;
   } catch (error) {
+    console.log(error);
     throw Error(error);
   }
 };

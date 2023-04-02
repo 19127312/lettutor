@@ -14,17 +14,17 @@ import { COLORS, IMGS } from "../constants";
 import { getUserInfo } from "../services/userAPI";
 
 const { width } = Dimensions.get("screen");
-
+import AvatarContext from "../context/AvatarProvider";
 const CustomDrawer = (props) => {
+  const { avatar, setAvatar } = React.useContext(AvatarContext);
   const [user, setUser] = useState(null);
-
   useEffect(() => {
     async function getUser() {
       const { data } = await getUserInfo();
       setUser(data);
     }
     getUser();
-  }, []);
+  }, [avatar]);
   //Get the user's name and email from the props
   return (
     <DrawerContentScrollView {...props}>

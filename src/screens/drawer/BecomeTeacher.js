@@ -136,32 +136,42 @@ export default function BecomeTeacher() {
 
   const becomeTeacherHandler = async () => {
     let formData = new FormData();
-    formData.append("name", name);
+    formData.append("name", user?.name ? user?.name : "Nguyen Van An");
     formData.append("birthday", moment(birthDate).format("YYYY-MM-DD"));
     formData.append("country", valueCountry);
-    formData.append("specialties", valueCourses.join(","));
+    formData.append("specialties", "english-for-kids,business-english");
     formData.append("interests", interests);
     formData.append("education", education);
     formData.append("experience", experience);
     formData.append("profession", profession);
     formData.append("bio", introduction);
-    formData.append("languages", language);
-    const newImageUri = "file:///" + img.split("file:/").join("");
-    formData.append("avatar", {
-      uri: newImageUri,
-      type: mime.getType(newImageUri),
-      name: newImageUri.split("/").pop(),
-    });
-    // formData.append("video", {
-    //   uri: videoUri,
-    //   type: "video/mp4",
-    //   name: "video.mp4",
-    // });
-    // formData.append("avatar", {
-    //   uri: img,
-    //   type: "image/jpeg",
-    //   name: "avatar.jpg",
-    // });
+    formData.append("targetStudent", "Beginner");
+    formData.append("languages", ["Vietnamese", "English"]);
+    if (hasImg) {
+      const newImageUri = "file:///" + img.split("file:/").join("");
+      formData.append("avatar", {
+        uri: newImageUri,
+        type: mime.getType(newImageUri),
+        name: newImageUri.split("/").pop(),
+      });
+    } else {
+      alert("Please choose your avatar");
+      return;
+    }
+    if (videoUri) {
+      console.log(videoUri);
+      const newVideoUri = "file:///" + videoUri.split("file:/").join("");
+
+      formData.append("video", {
+        uri: newVideoUri,
+        name: "video",
+        type: mime.getType(newVideoUri),
+      });
+    } else {
+      alert("Please choose your video");
+      return;
+    }
+
     formData.append("price", 50000);
     await becomeTeacher(formData).catch((err) => {
       {
@@ -190,8 +200,6 @@ export default function BecomeTeacher() {
             <TouchableOpacity onPress={() => pickImage()}>
               {hasImg ? (
                 <Image source={{ uri: img }} style={styles.userImg} />
-              ) : user ? (
-                <Image source={{ uri: user.avatar }} style={styles.userImg} />
               ) : (
                 <Image source={img} style={styles.userImg} />
               )}

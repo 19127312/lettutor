@@ -132,7 +132,8 @@ const vi = {
   Submit: "Gửi",
   MySpecialities: "Chuyên môn của tôi",
   IntroduceYourself: "Giới thiệu bản thân",
-  DoneStep: "Bạn đã hoàn thành bước này, vui lòng chờ duyệt",
+  DoneStep:
+    "Bạn đã hoàn thành các bước để trở thành giáo viên, vui lòng chờ duyệt",
   TotalTimeLearning: "Tổng thời gian học",
   UpcomingLession: "Lịch học sắp tới",
   Cancel: "Hủy",
