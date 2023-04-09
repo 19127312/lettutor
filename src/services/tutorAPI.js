@@ -4,6 +4,8 @@ const PATH = {
   FAVOR: "/user/manageFavoriteTutor",
   SEARCH: "/tutor/search",
   REPORT: "/report",
+  GET_SCHEDULE: "/schedule",
+  BOOKING: "/booking",
 };
 export async function getListTutor(page, perPage) {
   try {
@@ -58,6 +60,32 @@ export async function reportAction(content, id) {
     const res = await api.post(PATH.REPORT, {
       content,
       tutorId: id,
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    throw Error(error);
+  }
+}
+
+export async function getSchedule({ tutorId, startTimestamp, endTimestamp }) {
+  try {
+    const res = await api.get(
+      PATH.GET_SCHEDULE +
+        `?tutorId=${tutorId}&startTimestamp=${startTimestamp}&endTimestamp=${endTimestamp}`
+    );
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    throw Error(error);
+  }
+}
+
+export async function bookTutor({ scheduleDetailIds, note }) {
+  try {
+    const res = await api.post(PATH.BOOKING, {
+      scheduleDetailIds,
+      note,
     });
     return res.data;
   } catch (error) {
