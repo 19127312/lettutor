@@ -18,15 +18,16 @@
         "resourceClass": "m-medium"
       }
     },
-        "development": {
+    "development": {
       "developmentClient": true,
       "distribution": "internal",
       "ios": {
         "resourceClass": "m-medium"
       }
-    },
+    }
   },
   "submit": {
     "production": {}
   }
 }
+
