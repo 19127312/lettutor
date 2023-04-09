@@ -3,20 +3,24 @@
     "version": ">= 3.8.1"
   },
   "build": {
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "ios": {
+        "resourceClass": "m-medium"
+      },
+      "credentialsSource": "remote"
+    },
+    "production": {
+      "ios": {
+        "resourceClass": "m-medium"
+      }
+    },
     "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "ios": {
-        "resourceClass": "m-medium"
-      }
-    },
-    "preview": {
-      "distribution": "internal",
-      "ios": {
-        "resourceClass": "m-medium"
-      }
-    },
-    "production": {
       "ios": {
         "resourceClass": "m-medium"
       }

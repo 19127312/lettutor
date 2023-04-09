@@ -22,7 +22,8 @@ function createDateArray() {
   }
   return dateArray;
 }
-export default function BookingBottomSheet({ onBooking }) {
+export default function BookingBottomSheet({ onBooking, tutorID }) {
+  console.log(tutorID);
   const arr = createDateArray();
   const renderItem = (item) => (
     <TouchableOpacity style={styles.button} onPress={() => handleBooking(item)}>

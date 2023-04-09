@@ -34,7 +34,6 @@ export default function TeacherDetail({ route }) {
   const listRating = data.feedbacks;
 
   const sentReport = async () => {
-    console.log(report);
     // const response = await reportAction(report, data.userId);
     // if (response.message == "Report successfully") {
     //   alert("Report successfully");
@@ -65,7 +64,10 @@ export default function TeacherDetail({ route }) {
     await favorAction(data.id);
   };
   const renderContent = () => (
-    <BookingBottomSheet onBooking={(item) => handleBooking(item)} />
+    <BookingBottomSheet
+      onBooking={(item) => handleBooking(item)}
+      tutorID={data.userId}
+    />
   );
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>

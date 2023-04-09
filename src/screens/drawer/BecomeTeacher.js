@@ -123,6 +123,7 @@ export default function BecomeTeacher() {
     async function getUser() {
       const { data } = await getUserInfo();
       setUser(data.user);
+      setName(data.user.name);
       setValueCountry(data.user.country);
       setValueCourses(() => {
         let arr = [];
@@ -137,7 +138,7 @@ export default function BecomeTeacher() {
 
   const becomeTeacherHandler = async () => {
     let formData = new FormData();
-    formData.append("name", user?.name ? user?.name : "Nguyen Van An");
+    formData.append("name", name);
     formData.append("birthday", moment(birthDate).format("YYYY-MM-DD"));
     formData.append("country", valueCountry);
     formData.append("specialties", "english-for-kids,business-english");
@@ -210,11 +211,10 @@ export default function BecomeTeacher() {
               <TextInput
                 mode="outlined"
                 style={styles.input}
-                value={user?.name}
+                value={name}
                 onChangeText={setName}
                 name="name"
                 label="Tên"
-                defaultValue="Nguyen Van Ar"
                 left={<TextInput.Icon icon="account" />}
               />
             </View>

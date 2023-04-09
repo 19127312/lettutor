@@ -77,6 +77,7 @@ export default function Profile() {
       const { data } = await getUserInfo();
       setUser(data.user);
       setValueCountry(data.user.country);
+      setName(data.user.name);
       setValueLevel(data.user.level);
       setBirthDate(moment(data.user.birthday).format("YYYY-MM-DD"));
       setValueCourses(() => {
@@ -138,6 +139,7 @@ export default function Profile() {
       level: valueLevel,
       learnTopics: arrLearnTopics,
     });
+    alert("Update successfully");
     if (hasImg) {
       let formData = new FormData();
       const newImageUri = "file:///" + img.split("file:/").join("");
@@ -175,7 +177,7 @@ export default function Profile() {
         <TextInput
           mode="outlined"
           style={styles.input}
-          value={user?.name}
+          value={name}
           onChangeText={setName}
           name="name"
           label="Tên"
