@@ -21,3 +21,4 @@ export { default as CourseDetail } from "./detailScreen/CourseDetail";
 export { default as TeacherDetail } from "./detailScreen/TeacherDetail";
 export { default as Video } from "./detailScreen/Video";
 export { default as PDFView } from "./detailScreen/PDFView";
+export { default as BookingDetail } from "./detailScreen/BookingDetail";

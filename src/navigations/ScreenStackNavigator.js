@@ -8,6 +8,7 @@ import {
   TeacherDetail,
   Video,
   PDFView,
+  BookingDetail,
 } from "../screens";
 import { ROUTES } from "../constants";
 import DrawerNavigator from "./DrawerNavigator";
@@ -50,6 +51,7 @@ function ScreenStackNavigator() {
           options={{ headerShown: false }}
         />
         <Stack.Screen name={ROUTES.PDF_VIEW} component={PDFView} />
+        <Stack.Screen name={ROUTES.BOOKING_DETAIL} component={BookingDetail} />
       </Stack.Navigator>
     </BookingProvider>
   );
