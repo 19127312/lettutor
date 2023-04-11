@@ -84,7 +84,6 @@ export async function getSchedule({ tutorId, startTimestamp, endTimestamp }) {
 
 export async function bookTutor({ scheduleDetailIds, note }) {
   try {
-    console.log(scheduleDetailIds);
     const res = await api.post(PATH.BOOKING, {
       scheduleDetailIds,
       note,
@@ -96,7 +95,7 @@ export async function bookTutor({ scheduleDetailIds, note }) {
   }
 }
 
-export async function getUpcomingBooking(page, perPage, dateTimeGte) {
+export async function getUpcomingBooking({ page, perPage, dateTimeGte }) {
   try {
     const res = await api.get(PATH.GET_UPCOMING, {
       params: {

@@ -1,15 +1,15 @@
 import React, { useState, useContext, useRef } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import BottomSheet from "reanimated-bottom-sheet";
 import { AntDesign } from "@expo/vector-icons";
 import LocalizationContext from "../../context/LocalizationProvider";
 import BookingContext from "../../context/BookingProvider";
 import { Rating } from "react-native-elements";
-import { COLORS, ROUTES } from "../../constants";
+import { COLORS } from "../../constants";
 import { ScrollView } from "react-native-virtualized-view";
 import ListTag from "../../components/ListTag";
 import CommentCard from "../../components/CommentCard";
+import BookingBottomSheet from "../../components/BookingBottomSheet";
 import { Video } from "expo-av";
 import { Modal, Portal, Provider, TextInput } from "react-native-paper";
 import { FlatList } from "react-native-gesture-handler";
@@ -18,9 +18,8 @@ import { getLanguagesListLabel } from "../../business/handleTagLanguage";
 import { favorAction } from "../../services/tutorAPI";
 import { Pressable } from "react-native";
 import { bookTutor } from "../../services/tutorAPI";
-// import { reportAction } from "../../services/tutorAPI";
+import { reportAction } from "../../services/tutorAPI";
 export default function TeacherDetail({ route }) {
-  const navigation = useNavigation();
   const { data, isLiked } = route.params;
   const { i18n } = useContext(LocalizationContext);
   const video = React.useRef(null);
@@ -42,12 +41,30 @@ export default function TeacherDetail({ route }) {
     }
     hideModal();
   };
-
+  const handleBooking = async (item) => {
+    try {
+      const response = await bookTutor({
+        scheduleDetailIds: [item.scheduleDetails[0].id],
+        note: "",
+      });
+      if (response.message == "Book successful") {
+        alert("Booking successfully");
+      }
+    } catch (error) {
+      alert("Booking failed");
+    }
+    sheetRef.current.snapTo(2);
+  };
   const handleLike = async () => {
     setLiked(!liked);
     await favorAction(data.id);
   };
-
+  const renderContent = () => (
+    <BookingBottomSheet
+      onBooking={(item) => handleBooking(item)}
+      tutorID={data.userId}
+    />
+  );
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <Provider>
@@ -166,11 +183,7 @@ export default function TeacherDetail({ route }) {
                   <View style={styles.interactButtonsView}>
                     <TouchableOpacity
                       style={styles.interactButton}
-                      onPress={() => {
-                        navigation.navigate(ROUTES.BOOKING_DETAIL, {
-                          tutorID: data.userId,
-                        });
-                      }}
+                      onPress={() => sheetRef.current.snapTo(0)}
                     >
                       <Text style={styles.interactButtonText}>
                         {i18n.t("Book")}
@@ -267,6 +280,14 @@ export default function TeacherDetail({ route }) {
           </>
         </ScrollView>
       </Provider>
+      <BottomSheet
+        ref={sheetRef}
+        snapPoints={[450, 300, 0]}
+        borderRadius={10}
+        renderContent={renderContent}
+        initialSnap={2}
+        enabledInnerScrolling={true}
+      />
     </View>
   );
 }

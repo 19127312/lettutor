@@ -56,16 +56,15 @@ function convertSecondsToTime(seconds) {
 }
 export default function Video({ route, navigation }) {
   const { data } = route.params;
-
-  const startTime = convertDate(data.time, data.date);
-
-  const waitTime = startTime.valueOf() - Date.now();
+  const { scheduleDetailInfo } = data;
+  const startDate = new Date(scheduleDetailInfo.startPeriodTimestamp);
+  const waitTime = startDate - Date.now();
   const [timerCount, setTimer] = React.useState(parseInt(waitTime / 1000));
   const [timeLearn, setTimeLearn] = React.useState(0);
   useEffect(() => {
     let countDown = setInterval(() => {
       setTimer((lastTimerCount) => {
-        lastTimerCount <= 1 && clearInterval(interval);
+        lastTimerCount <= 1 && clearInterval(countDown);
         return lastTimerCount - 1;
       });
     }, 1000);
@@ -98,7 +97,7 @@ export default function Video({ route, navigation }) {
             <Text style={styles.title}>The lesson will be started after:</Text>
             <Text style={styles.title}>{toTimeString(timerCount)}</Text>
             <Text style={styles.title}>
-              ({startTime.toUTCString().substring(0, 22)}) UTC
+              ({startDate.toUTCString().substring(0, 22)}) UTC
             </Text>
           </>
         )}
