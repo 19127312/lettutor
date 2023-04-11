@@ -6,6 +6,7 @@ const PATH = {
   REPORT: "/report",
   GET_SCHEDULE: "/schedule",
   BOOKING: "/booking",
+  GET_UPCOMING: "/booking/list/student",
 };
 export async function getListTutor(page, perPage) {
   try {
@@ -89,6 +90,24 @@ export async function bookTutor({ scheduleDetailIds, note }) {
       note,
     });
     return res.data;
+  } catch (error) {
+    console.log(error);
+    throw Error(error);
+  }
+}
+
+export async function getUpcomingBooking(page, perPage, dateTimeGte) {
+  try {
+    const res = await api.get(PATH.GET_UPCOMING, {
+      params: {
+        page,
+        perPage,
+        dateTimeGte,
+        orderBy: "meeting",
+        order: "asc",
+      },
+    });
+    return res.data.data;
   } catch (error) {
     console.log(error);
     throw Error(error);

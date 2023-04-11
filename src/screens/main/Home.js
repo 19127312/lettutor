@@ -10,6 +10,7 @@ import TeacherCard from "../../components/TeacherCard";
 import LocalizationContext from "../../context/LocalizationProvider";
 import { COLORS, ROUTES } from "../../constants";
 import { getListTutor } from "../../services/tutorAPI";
+import { getTotalCourse } from "../../services/courseAPI";
 export default function Home({ navigation }) {
   const { i18n } = useContext(LocalizationContext);
   const [listTutor, setListTutor] = React.useState([]);
@@ -26,6 +27,9 @@ export default function Home({ navigation }) {
         return item.level != null;
       });
       setListTutor(data);
+
+      const totalCourse = await getTotalCourse();
+      console.log(totalCourse);
     }
     fetchData();
   }, []);
