@@ -5,22 +5,28 @@ import { TextInput } from "react-native-paper";
 import { COLORS, IMGS } from "../constants";
 export default function LessionHistoryCard({ data }) {
   const { i18n } = useContext(LocalizationContext);
-  const review = data.review ? data.review : i18n.t("NoReview");
+  const { tutorInfo } = data;
+  const dateTime = data.startTime.split("T")[0];
+  const time =
+    data.startTime.split("T")[1].split(":")[0] +
+    ":" +
+    data.startTime.split("T")[1].split(":")[1];
+  // const review = data.review ? data.review : i18n.t("NoReview");
   return (
     <View style={styles.outerContainer}>
       <View style={styles.innerContainer}>
-        <Image style={styles.avtimg} source={{ uri: data.teacher.avatar }} />
+        <Image style={styles.avtimg} source={{ uri: tutorInfo.avatar }} />
         <View style={styles.detailContainer}>
-          <Text style={styles.name}>{data.teacher.name}</Text>
-          <Text style={styles.date}>{data.date}</Text>
-          <Text style={styles.time}>{data.time} - 10:00 AM</Text>
+          <Text style={styles.name}>{tutorInfo.name}</Text>
+          <Text style={styles.date}>{dateTime}</Text>
+          <Text style={styles.date}>{time}</Text>
         </View>
       </View>
       <TextInput
-        value={review}
+        value={"No review"}
         name="review"
         label="Review"
-        defaultValue={review}
+        defaultValue={"No review"}
         disabled={true}
       />
     </View>
