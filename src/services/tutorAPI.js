@@ -8,6 +8,7 @@ const PATH = {
   BOOKING: "/booking",
   GET_UPCOMING: "/booking/list/student",
   GET_HISTORY: "/call/history?isTutor=false",
+  DELETE_SCHEDULE: "/booking/schedule-detail",
 };
 export async function getListTutor(page, perPage) {
   try {
@@ -116,12 +117,23 @@ export async function getUpcomingBooking({ page, perPage, dateTimeGte }) {
 
 export async function getHistoryBooking({ page, perPage }) {
   const stringapi = PATH.GET_HISTORY + `&page=${page}&perPage=${perPage}`;
-  console.log("stringapi ", stringapi);
   try {
     const res = await api.get(stringapi);
     return res.data;
   } catch (error) {
-    console.log(error);
+    throw Error(error);
+  }
+}
+
+export async function cancelBooking(id) {
+  console.log(id);
+  try {
+    const res = await api.delete(PATH.DELETE_SCHEDULE, {
+      scheduleDetailId: id,
+      cancelInfo: { cancelReasonId: 1 },
+    });
+    return res.data;
+  } catch (error) {
     throw Error(error);
   }
 }

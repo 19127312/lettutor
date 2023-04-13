@@ -17,15 +17,7 @@ export default function LessionCard({ data, onDelete }) {
     navigation.navigate(ROUTES.VIDEO, { data });
   };
   const handleDeleteLesson = () => {
-    // const currentHour = new Date().getHours();
-    // // Convert 8:00 AM to 24-hour format
-    // const targetHour = 8;
-    // // Check if the current hour is less than 2 hours away from the target hour
-    // if (targetHour - currentHour <= 2 && targetHour - currentHour > 0) {
-    //   alert("You can't delete this lesson");
-    // } else {
-    //   onDelete(data.id);
-    // }
+    onDelete(data.id);
   };
   return (
     <View style={styles.outerContainer}>

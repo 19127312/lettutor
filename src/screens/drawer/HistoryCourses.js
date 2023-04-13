@@ -2,7 +2,6 @@ import { View, Text, StyleSheet, FlatList } from "react-native";
 import React, { useContext, useState, useEffect } from "react";
 import ThemeContext from "../../context/ThemeProvider";
 import LessionHistoryCard from "../../components/LessionHistoryCard";
-import BookingContext from "../../context/BookingProvider";
 import { getHistoryBooking } from "../../services/tutorAPI";
 export default function HistoryCourses() {
   const { themeData } = useContext(ThemeContext);
@@ -10,12 +9,10 @@ export default function HistoryCourses() {
   const [page, setPage] = useState(1);
 
   async function fetchData(page) {
-    console.log("page", page);
     let { rows } = await getHistoryBooking({
       page: page,
       perPage: 10,
     });
-    console.log("rowslength", rows.length);
     if (rows.length > 0) {
       setHistoryBooking([...historyBooking, ...rows]);
     }

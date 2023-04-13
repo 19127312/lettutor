@@ -4,7 +4,9 @@ import LocalizationContext from "../../context/LocalizationProvider";
 import BookingContext from "../../context/BookingProvider";
 import LessionCard from "../../components/LessionCard";
 import { getTotalCourse } from "../../services/courseAPI";
-import { getUpcomingBooking } from "../../services/tutorAPI";
+import { getUpcomingBooking, cancelBooking } from "../../services/tutorAPI";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 export default function Schedule() {
   const { i18n } = useContext(LocalizationContext);
   const [totalTime, setTotalTime] = useState("");
@@ -13,10 +15,29 @@ export default function Schedule() {
   const [initNumber, setInitNumber] = useState(0);
   const [initPage, setInitPage] = useState(1);
 
-  const deleteLesson = (id) => {
-    setUpcomingBooking((pre) => {
-      return pre.filter((item) => item.id !== id);
-    });
+  const deleteLesson = async (id) => {
+    const accessToken = await AsyncStorage.getItem("accessToken");
+
+    fetch("https://sandbox.api.lettutor.com/booking/schedule-detail", {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({
+        scheduleDetailId: id,
+        cancelInfo: { cancelReasonId: 1 },
+      }),
+    })
+      .then((response) => response.json())
+      .then(() => {
+        alert("Cancel successfully");
+        setUpcomingBooking(upcomingBooking.filter((item) => item.id !== id));
+      })
+      .catch(() => {
+        alert("Cancel failed");
+      });
   };
   async function fecthHour() {
     const totalCourse = await getTotalCourse();
@@ -45,12 +66,6 @@ export default function Schedule() {
         currentPage--;
       }
     }
-
-    // rows = rows.sort(
-    //   (a, b) =>
-    //     new Date(a.scheduleDetailInfo.startPeriodTimestamp) -
-    //     new Date(b.scheduleDetailInfo.startPeriodTimestamp)
-    // );
   }
   useEffect(() => {
     fecthHour();
