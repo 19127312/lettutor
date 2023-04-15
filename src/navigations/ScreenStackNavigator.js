@@ -12,12 +12,12 @@ import {
 } from "../screens";
 import { ROUTES } from "../constants";
 import DrawerNavigator from "./DrawerNavigator";
-import { BookingProvider } from "../context/BookingProvider";
+import { AvatarProvider } from "../context/AvatarProvider";
 const Stack = createStackNavigator();
 
 function ScreenStackNavigator() {
   return (
-    <BookingProvider>
+    <AvatarProvider>
       <Stack.Navigator>
         <Stack.Screen
           name={ROUTES.LOGIN}
@@ -53,7 +53,7 @@ function ScreenStackNavigator() {
         <Stack.Screen name={ROUTES.PDF_VIEW} component={PDFView} />
         <Stack.Screen name={ROUTES.BOOKING_DETAIL} component={BookingDetail} />
       </Stack.Navigator>
-    </BookingProvider>
+    </AvatarProvider>
   );
 }
 

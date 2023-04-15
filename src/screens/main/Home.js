@@ -4,31 +4,36 @@ import {
   FlatList,
   StyleSheet,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import React, { useContext, useEffect } from "react";
 import TeacherCard from "../../components/TeacherCard";
 import LocalizationContext from "../../context/LocalizationProvider";
 import { COLORS, ROUTES } from "../../constants";
 import { getListTutor } from "../../services/tutorAPI";
+import AvatarContext from "../../context/AvatarProvider";
 export default function Home({ navigation }) {
+  const { avatar } = useContext(AvatarContext);
   const { i18n } = useContext(LocalizationContext);
   const [listTutor, setListTutor] = React.useState([]);
   const [favoriteTutor, setFavoriteTutor] = React.useState([]);
-  useEffect(() => {
-    async function fetchData() {
-      const response = await getListTutor(1, 60);
-      setFavoriteTutor(() => {
-        const newListID = response.favoriteTutor.map((item) => item.secondId);
-        return newListID;
-      });
+  const [isLoading, setIsLoading] = React.useState(true);
+  async function fetchData() {
+    const response = await getListTutor(1, 60);
+    setFavoriteTutor(() => {
+      const newListID = response.favoriteTutor.map((item) => item.secondId);
+      return newListID;
+    });
 
-      const data = response.tutors.rows.filter((item) => {
-        return item.level != null;
-      });
-      setListTutor(data);
-    }
+    const data = response.tutors.rows.filter((item) => {
+      return item.level != null;
+    });
+    setListTutor(data);
+    setIsLoading(false);
+  }
+  useEffect(() => {
     fetchData();
-  }, []);
+  }, [avatar]);
 
   return (
     <View style={styles.container}>
@@ -53,13 +58,26 @@ export default function Home({ navigation }) {
           <Text style={styles.seeMore}>{i18n.t("SeeAll")}</Text>
         </TouchableOpacity>
       </View>
-      <FlatList
-        data={listTutor}
-        renderItem={({ item }) => (
-          <TeacherCard data={item} isLiked={favoriteTutor.includes(item.id)} />
+      <>
+        {isLoading ? (
+          <ActivityIndicator
+            size="large"
+            color={COLORS.primary}
+            style={styles.centerLoading}
+          />
+        ) : (
+          <FlatList
+            data={listTutor}
+            renderItem={({ item }) => (
+              <TeacherCard
+                data={item}
+                isLiked={favoriteTutor.includes(item.id)}
+              />
+            )}
+            keyExtractor={(item) => item.id}
+          />
         )}
-        keyExtractor={(item) => item.id}
-      />
+      </>
     </View>
   );
 }
@@ -118,5 +136,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginTop: 10,
     marginBottom: 5,
+  },
+  centerLoading: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

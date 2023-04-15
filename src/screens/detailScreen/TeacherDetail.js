@@ -3,7 +3,6 @@ import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import BottomSheet from "reanimated-bottom-sheet";
 import { AntDesign } from "@expo/vector-icons";
 import LocalizationContext from "../../context/LocalizationProvider";
-import BookingContext from "../../context/BookingProvider";
 import { Rating } from "react-native-elements";
 import { COLORS } from "../../constants";
 import { ScrollView } from "react-native-virtualized-view";
@@ -19,7 +18,9 @@ import { favorAction } from "../../services/tutorAPI";
 import { Pressable } from "react-native";
 import { bookTutor } from "../../services/tutorAPI";
 import { reportAction } from "../../services/tutorAPI";
+import AvatarContext from "../../context/AvatarProvider";
 export default function TeacherDetail({ route }) {
+  const { setAvatar } = useContext(AvatarContext);
   const { data, isLiked } = route.params;
   const { i18n } = useContext(LocalizationContext);
   const video = React.useRef(null);
@@ -58,6 +59,7 @@ export default function TeacherDetail({ route }) {
   const handleLike = async () => {
     setLiked(!liked);
     await favorAction(data.id);
+    setAvatar((prev) => !prev);
   };
   const renderContent = () => (
     <BookingBottomSheet

@@ -1,9 +1,18 @@
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import React, { useState, useContext, useEffect, useRef } from "react";
 import LocalizationContext from "../../context/LocalizationProvider";
 import BookingContext from "../../context/BookingProvider";
 import LessionCard from "../../components/LessionCard";
 import { getTotalCourse } from "../../services/courseAPI";
+import { COLORS, ROUTES } from "../../constants";
+
 import { getUpcomingBooking, cancelBooking } from "../../services/tutorAPI";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -14,6 +23,8 @@ export default function Schedule() {
   const [page, setPage] = useState(5);
   const [initNumber, setInitNumber] = useState(0);
   const [initPage, setInitPage] = useState(1);
+  const [isReload, setIsReload] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const deleteLesson = async (id) => {
     const accessToken = await AsyncStorage.getItem("accessToken");
@@ -61,6 +72,7 @@ export default function Schedule() {
         setUpcomingBooking([...upcomingBooking, ...rows]);
         setPage(currentPage);
         setInitPage(currentPage);
+        setIsLoading(false);
         flag = false;
       } else {
         currentPage--;
@@ -70,34 +82,54 @@ export default function Schedule() {
   useEffect(() => {
     fecthHour();
     fetchData(5);
-  }, []);
+  }, [isReload]);
   useEffect(() => {
     if (initNumber != 0 && initNumber < 5 && initPage != 1) {
       setPage(initPage - 1);
       fetchData(initPage - 1);
     }
   }, [initNumber, initPage]);
+
+  const reload = () => {
+    setUpcomingBooking((pre) => {
+      return [];
+    });
+    setPage(5);
+    setIsReload((pre) => !pre);
+  };
   return (
     <View style={styles.container}>
       <View style={styles.banner}>
-        <Text style={styles.welcomeText}>{i18n.t("TotalTimeLearning")} :</Text>
-        <Text style={styles.welcomeText}>{totalTime}</Text>
+        <TouchableOpacity onPress={reload}>
+          <Text style={styles.welcomeText}>
+            {i18n.t("TotalTimeLearning")} :
+          </Text>
+          <Text style={styles.welcomeText}>{totalTime}</Text>
+        </TouchableOpacity>
       </View>
       <Text style={styles.title}>{i18n.t("UpcomingLession")}</Text>
-      <FlatList
-        data={upcomingBooking}
-        renderItem={({ item }) => (
-          <LessionCard data={item} onDelete={deleteLesson} />
-        )}
-        keyExtractor={(item) => item.id}
-        onEndReachedThreshold={0.8}
-        onEndReached={() => {
-          if (page > 1) {
-            setPage(page - 1);
-            fetchData(page - 1);
-          }
-        }}
-      />
+      {isLoading ? (
+        <ActivityIndicator
+          size="large"
+          color={COLORS.primary}
+          style={styles.centerLoading}
+        />
+      ) : (
+        <FlatList
+          data={upcomingBooking}
+          renderItem={({ item }) => (
+            <LessionCard data={item} onDelete={deleteLesson} />
+          )}
+          keyExtractor={(item) => item.id}
+          onEndReachedThreshold={0.8}
+          onEndReached={() => {
+            if (page > 1) {
+              setPage(page - 1);
+              fetchData(page - 1);
+            }
+          }}
+        />
+      )}
     </View>
   );
 }
@@ -124,5 +156,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     color: "white",
+  },
+  centerLoading: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

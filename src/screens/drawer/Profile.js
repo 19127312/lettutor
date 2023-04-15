@@ -5,6 +5,7 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import React, { useContext, useState, useEffect } from "react";
 import ThemeContext from "../../context/ThemeProvider";
@@ -23,6 +24,7 @@ const { width } = Dimensions.get("screen");
 
 export default function Profile() {
   const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const { i18n } = useContext(LocalizationContext);
   const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
   const [img, setImg] = useState(IMGS.user);
@@ -87,6 +89,7 @@ export default function Profile() {
         });
         return arr;
       });
+      setIsLoading(false);
     }
     getUser();
   }, []);
@@ -158,122 +161,135 @@ export default function Profile() {
     }
   };
   return (
-    <View
-      style={[styles.container, { backgroundColor: themeData.backgroundColor }]}
-    >
-      <View style={styles.imgContainer}>
-        <TouchableOpacity onPress={() => pickImage()}>
-          {hasImg ? (
-            <Image source={{ uri: img }} style={styles.userImg} />
-          ) : user ? (
-            <Image source={{ uri: user.avatar }} style={styles.userImg} />
-          ) : (
-            <Image source={img} style={styles.userImg} />
-          )}
-        </TouchableOpacity>
-
-        {/* <Text style={styles.userName}>Kiet Tuong</Text> */}
-        <Text style={styles.userEmail}>{user?.email}</Text>
-        <TextInput
-          mode="outlined"
-          style={styles.input}
-          value={name}
-          onChangeText={setName}
-          name="name"
-          label="Tên"
-          defaultValue="Nguyen Van Ar"
-          left={<TextInput.Icon icon="account" />}
+    <>
+      {isLoading ? (
+        <ActivityIndicator
+          size="large"
+          color={COLORS.primary}
+          style={styles.centerLoading}
         />
-        <TouchableOpacity onPress={showDatePicker}>
-          <TextInput
-            mode="outlined"
-            style={styles.input}
-            value={moment(birthDate).format("DD MMMM, YYYY")}
-            name="dob"
-            label="Ngày sinh"
-            editable={false}
-            left={<TextInput.Icon icon="calendar" />}
-          />
-          <DateTimePickerModal
-            isVisible={isDatePickerVisible}
-            mode="date"
-            onChange={(date) => setBirthDate(date)}
-            value={handleConfirm}
-            onConfirm={handleConfirm}
-            onCancel={hideDatePicker}
-          />
-        </TouchableOpacity>
-        <DropDownPicker
-          placeholder={i18n.t("Country")}
-          style={styles.dropdownmulti}
-          open={openCountry}
-          value={valueCountry}
-          items={itemsCountry}
-          setOpen={setOpenCountry}
-          setValue={setValueCountry}
-          setItems={setItemsCountry}
-          theme="LIGHT"
-        />
-        <TextInput
-          mode="outlined"
-          style={styles.input}
-          value={user?.phone}
-          onChangeText={setPhone}
-          name="SDT"
-          label="SDT"
-          defaultValue="Nguyen Van Ar"
-          left={<TextInput.Icon icon="phone" />}
-        />
-
-        <DropDownPicker
-          placeholder={i18n.t("SelectCourse")}
-          style={styles.dropdownmulti}
-          open={openCourses}
-          value={valueCourses}
-          items={itemsCourses}
-          setOpen={setOpenCourses}
-          setValue={setValueCourses}
-          setItems={setItemsCourses}
-          theme="LIGHT"
-          multiple={true}
-          mode="BADGE"
-          badgeDotColors={[
-            "#e76f51",
-            "#00b4d8",
-            "#e9c46a",
-            "#e76f51",
-            "#8ac926",
-            "#00b4d8",
-            "#e9c46a",
+      ) : (
+        <View
+          style={[
+            styles.container,
+            { backgroundColor: themeData.backgroundColor },
           ]}
-          dropDownDirection="TOP"
-        />
-        <DropDownPicker
-          placeholder={i18n.t("SelectLevel")}
-          style={styles.dropdownmulti}
-          open={openLevel}
-          value={valueLevel}
-          items={itemsLevel}
-          setOpen={setOpenLevel}
-          setValue={setValueLevel}
-          setItems={setItemsLevel}
-          theme="LIGHT"
-          mode="BADGE"
-          badgeDotColors={[
-            "#e76f51",
-            "#00b4d8",
-            "#e9c46a",
-            "#e76f51",
-            "#8ac926",
-            "#00b4d8",
-            "#e9c46a",
-          ]}
-        />
-        <TouchableOpacity style={styles.updateButton} onPress={updateInfo}>
-          <Text style={styles.updateButtonText}> {i18n.t("Update")}</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+        >
+          <View style={styles.imgContainer}>
+            <TouchableOpacity onPress={() => pickImage()}>
+              {hasImg ? (
+                <Image source={{ uri: img }} style={styles.userImg} />
+              ) : user ? (
+                <Image source={{ uri: user.avatar }} style={styles.userImg} />
+              ) : (
+                <Image source={img} style={styles.userImg} />
+              )}
+            </TouchableOpacity>
+
+            {/* <Text style={styles.userName}>Kiet Tuong</Text> */}
+            <Text style={styles.userEmail}>{user?.email}</Text>
+            <TextInput
+              mode="outlined"
+              style={styles.input}
+              value={name}
+              onChangeText={setName}
+              name="name"
+              label="Tên"
+              defaultValue="Nguyen Van Ar"
+              left={<TextInput.Icon icon="account" />}
+            />
+            <TouchableOpacity onPress={showDatePicker}>
+              <TextInput
+                mode="outlined"
+                style={styles.input}
+                value={moment(birthDate).format("DD MMMM, YYYY")}
+                name="dob"
+                label="Ngày sinh"
+                editable={false}
+                left={<TextInput.Icon icon="calendar" />}
+              />
+              <DateTimePickerModal
+                isVisible={isDatePickerVisible}
+                mode="date"
+                onChange={(date) => setBirthDate(date)}
+                value={handleConfirm}
+                onConfirm={handleConfirm}
+                onCancel={hideDatePicker}
+              />
+            </TouchableOpacity>
+            <DropDownPicker
+              placeholder={i18n.t("Country")}
+              style={styles.dropdownmulti}
+              open={openCountry}
+              value={valueCountry}
+              items={itemsCountry}
+              setOpen={setOpenCountry}
+              setValue={setValueCountry}
+              setItems={setItemsCountry}
+              theme="LIGHT"
+            />
+            <TextInput
+              mode="outlined"
+              style={styles.input}
+              value={user?.phone}
+              onChangeText={setPhone}
+              name="SDT"
+              label="SDT"
+              defaultValue="Nguyen Van Ar"
+              left={<TextInput.Icon icon="phone" />}
+            />
+
+            <DropDownPicker
+              placeholder={i18n.t("SelectCourse")}
+              style={styles.dropdownmulti}
+              open={openCourses}
+              value={valueCourses}
+              items={itemsCourses}
+              setOpen={setOpenCourses}
+              setValue={setValueCourses}
+              setItems={setItemsCourses}
+              theme="LIGHT"
+              multiple={true}
+              mode="BADGE"
+              badgeDotColors={[
+                "#e76f51",
+                "#00b4d8",
+                "#e9c46a",
+                "#e76f51",
+                "#8ac926",
+                "#00b4d8",
+                "#e9c46a",
+              ]}
+              dropDownDirection="TOP"
+            />
+            <DropDownPicker
+              placeholder={i18n.t("SelectLevel")}
+              style={styles.dropdownmulti}
+              open={openLevel}
+              value={valueLevel}
+              items={itemsLevel}
+              setOpen={setOpenLevel}
+              setValue={setValueLevel}
+              setItems={setItemsLevel}
+              theme="LIGHT"
+              mode="BADGE"
+              badgeDotColors={[
+                "#e76f51",
+                "#00b4d8",
+                "#e9c46a",
+                "#e76f51",
+                "#8ac926",
+                "#00b4d8",
+                "#e9c46a",
+              ]}
+            />
+            <TouchableOpacity style={styles.updateButton} onPress={updateInfo}>
+              <Text style={styles.updateButtonText}> {i18n.t("Update")}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+    </>
   );
 }
 const styles = StyleSheet.create({
@@ -349,5 +365,10 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     fontSize: 15,
     fontWeight: "bold",
+  },
+  centerLoading: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
