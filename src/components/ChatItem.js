@@ -8,7 +8,7 @@ export default function ChatItem({ item }) {
         style={{
           maxWidth: Dimensions.get("screen").width * 0.8,
           backgroundColor: "#3a6ee8",
-          alignSelf: item.fromMe ? "flex-end" : "flex-start",
+          alignSelf: item.role === "user" ? "flex-end" : "flex-start",
           marginHorizontal: 10,
           padding: 10,
           borderRadius: 8,
@@ -22,7 +22,7 @@ export default function ChatItem({ item }) {
             fontSize: 16,
           }}
         >
-          {item.message}
+          {item.content}
         </Text>
       </View>
     </View>

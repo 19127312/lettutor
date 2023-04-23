@@ -14,14 +14,16 @@ import LocalizationContext from "../../context/LocalizationProvider";
 import Icon from "react-native-vector-icons/Ionicons";
 import { ScrollView } from "react-native-virtualized-view";
 import { useNavigation } from "@react-navigation/native";
-export default function CourseDetail() {
+export default function CourseDetail({ route }) {
+  const { data } = route.params;
   const navigation = useNavigation();
   const { i18n } = useContext(LocalizationContext);
+  console.log(data.topics);
   const arr = ["He", "LO", "HI", "Ha", "hu", "He", "OK", "KO", "SD"];
   return (
     <View style={styles.container}>
       <ScrollView style={{ flex: 1 }}>
-        <CourseCard style={{ marginHorizontal: 20, flex: 0 }} />
+        <CourseCard style={{ marginHorizontal: 20, flex: 0 }} data={data} />
         <Text style={styles.headingTitle}>{i18n.t("Overview")}</Text>
         <View style={styles.headingContainer}>
           <Icon
@@ -35,14 +37,7 @@ export default function CourseDetail() {
           </Text>
         </View>
 
-        <Text style={styles.paragraph}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris nulla
-          neque, scelerisque sit amet velit eu, vestibulum ultricies odio.
-          Quisque eu ex vitae nisi venenatis euismod. Etiam vitae erat suscipit,
-          congue dolor vitae, malesuada mauris. Vivamus sit amet sapien
-          lobortis, auctor est eget, feugiat lorem. Fusce a lacus eget mauris
-          rhoncus venenatis accumsan in sem.
-        </Text>
+        <Text style={styles.paragraph}>{data.reason}</Text>
         <View style={styles.headingContainer}>
           <Icon
             name="help-circle"
@@ -55,14 +50,7 @@ export default function CourseDetail() {
           </Text>
         </View>
 
-        <Text style={styles.paragraph}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris nulla
-          neque, scelerisque sit amet velit eu, vestibulum ultricies odio.
-          Quisque eu ex vitae nisi venenatis euismod. Etiam vitae erat suscipit,
-          congue dolor vitae, malesuada mauris. Vivamus sit amet sapien
-          lobortis, auctor est eget, feugiat lorem. Fusce a lacus eget mauris
-          rhoncus venenatis accumsan in sem.
-        </Text>
+        <Text style={styles.paragraph}>{data.purpose}</Text>
         <Text style={styles.headingTitle}>{i18n.t("ExperienceLevel")}</Text>
         <View style={styles.headingContainer}>
           <Icon
@@ -81,20 +69,20 @@ export default function CourseDetail() {
             color={"black"}
             style={{ alignSelf: "center" }}
           />
-          <Text style={styles.headingParagraph}>9</Text>
+          <Text style={styles.headingParagraph}>{data.topics.length}</Text>
         </View>
         <Text style={styles.headingTitle}>{i18n.t("ListTopics")}</Text>
         <FlatList
-          data={arr}
+          data={data.topics}
           renderItem={({ item, index }) => (
             <Pressable
               onPress={() => {
-                navigation.navigate(ROUTES.PDF_VIEW);
+                navigation.navigate(ROUTES.PDF_VIEW, { data: item });
               }}
             >
               <View style={styles.itemTopic}>
                 <Text style={styles.headingParagraph}>
-                  {index + 1}-{item}
+                  {index + 1} - {item.name}
                 </Text>
               </View>
             </Pressable>

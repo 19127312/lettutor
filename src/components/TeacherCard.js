@@ -1,50 +1,38 @@
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Image,
-  Pressable,
-} from "react-native";
-import React, { useState } from "react";
+import { StyleSheet, Text, View, Image, Pressable } from "react-native";
+import React, { useState, useContext } from "react";
 import ListTag from "./ListTag";
 import { AntDesign } from "@expo/vector-icons";
 import { COLORS, IMGS, ROUTES } from "../constants";
-import { Rating, AirbnbRating } from "react-native-elements";
+import { Rating } from "react-native-elements";
 import { useNavigation } from "@react-navigation/native";
-
-export default function TeacherCard({ isLiked }) {
+import { getSpecialitiesListLabel } from "../business/handleTagSpecialities";
+import { favorAction } from "../services/tutorAPI";
+import AvatarContext from "../context/AvatarProvider";
+import { getFlag } from "../business/handleFlag";
+export default function TeacherCard({ data, isLiked }) {
+  const { setAvatar } = useContext(AvatarContext);
   const navigation = useNavigation();
   const [followStatus, setFollowStatus] = useState(isLiked);
-  const listSpecialies = [
-    "English",
-    "Math",
-    "Physics",
-    "IEOS",
-    "FES",
-    "FESe",
-    "FEsssS",
-  ];
+  const listSpecialies = getSpecialitiesListLabel(data.specialties.split(","));
   return (
     <View style={styles.outerContainer}>
       <Pressable
         onPress={() => {
-          console.log("Press");
-          navigation.navigate(ROUTES.TEACHER_DETAIL);
+          navigation.navigate(ROUTES.TEACHER_DETAIL, { data, isLiked });
         }}
         style={{ flex: 1 }}
       >
         <View style={styles.container}>
           <View style={styles.header}>
             <View style={styles.HeaderRight}>
-              <Image style={styles.avtimg} source={IMGS.user} />
+              <Image style={styles.avtimg} source={{ uri: data.avatar }} />
               <View style={styles.nameContainer}>
-                <Text style={styles.name}>Teacher Seeeee</Text>
+                <Text style={styles.name}>{data.name}</Text>
 
                 <Rating
                   type="custom"
                   readonly={true}
-                  startingValue={3}
+                  startingValue={data.rating}
                   style={{
                     marginVertical: 1,
                     alignSelf: "flex-start",
@@ -52,15 +40,16 @@ export default function TeacherCard({ isLiked }) {
                   imageSize={20}
                   ratingBackgroundColor="transparent"
                 />
-                <Image style={styles.flag} source={IMGS.vi} />
+                <Image style={styles.flag} source={getFlag(data.country)} />
               </View>
             </View>
             <View style={styles.HeaderLeft}>
               <Pressable
                 style={styles.btnFollow}
-                onPress={() => {
-                  console.log("Press follow");
+                onPress={async () => {
                   setFollowStatus(!followStatus);
+                  setAvatar((pre) => !pre);
+                  await favorAction(data.id);
                 }}
               >
                 <AntDesign
@@ -76,7 +65,7 @@ export default function TeacherCard({ isLiked }) {
           </View>
           <View style={styles.descript}>
             <Text numberOfLines={4} style={styles.textDescript}>
-              1 2 3 5234 123 123 123 123 123 325sd fsdf sdf sdf sdf
+              {data.bio}
             </Text>
           </View>
         </View>
@@ -92,7 +81,6 @@ const styles = StyleSheet.create({
 
   outerContainer: {
     flex: 1,
-    height: 240,
     borderRadius: 8,
     elevation: 4,
     shadowColor: "black",

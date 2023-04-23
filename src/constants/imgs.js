@@ -6,4 +6,8 @@ export default {
   completeImg: require("../assets/complete.png"),
   vi: require("../assets/vietnam.png"),
   usa: require("../assets/usa.png"),
+  ph: require("../assets/ph.png"),
+  tw: require("../assets/tw.png"),
+  global: require("../assets/global.png"),
+  empty: require("../assets/empty.png"),
 };

@@ -15,7 +15,7 @@ import CustomDrawer from "../components/CustomDrawer";
 import BottomTabNavigator from "./BottomTabNavigator";
 import LocalizationContext from "../context/LocalizationProvider";
 import ThemeContext from "../context/ThemeProvider";
-
+import { AvatarProvider } from "../context/AvatarProvider";
 const Drawer = createDrawerNavigator();
 
 function DrawerNavigator() {

@@ -1,55 +1,71 @@
 import React, { useState, useContext, useRef } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Image,
-  ActivityIndicator,
-  Dimensions,
-  Button,
-} from "react-native";
-import Animated from "react-native-reanimated";
+import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import BottomSheet from "reanimated-bottom-sheet";
 import { AntDesign } from "@expo/vector-icons";
 import LocalizationContext from "../../context/LocalizationProvider";
-import { Rating, AirbnbRating } from "react-native-elements";
+import { Rating } from "react-native-elements";
 import { COLORS } from "../../constants";
 import { ScrollView } from "react-native-virtualized-view";
 import ListTag from "../../components/ListTag";
 import CommentCard from "../../components/CommentCard";
 import BookingBottomSheet from "../../components/BookingBottomSheet";
-import { Video, AVPlaybackStatus } from "expo-av";
+import { Video } from "expo-av";
 import { Modal, Portal, Provider, TextInput } from "react-native-paper";
 import { FlatList } from "react-native-gesture-handler";
-
-export default function TeacherDetail() {
+import { getSpecialitiesListLabel } from "../../business/handleTagSpecialities";
+import { getLanguagesListLabel } from "../../business/handleTagLanguage";
+import { favorAction } from "../../services/tutorAPI";
+import { Pressable } from "react-native";
+import { bookTutor } from "../../services/tutorAPI";
+import { reportAction } from "../../services/tutorAPI";
+import AvatarContext from "../../context/AvatarProvider";
+export default function TeacherDetail({ route }) {
+  const { setAvatar } = useContext(AvatarContext);
+  const { data, isLiked } = route.params;
   const { i18n } = useContext(LocalizationContext);
   const video = React.useRef(null);
   const sheetRef = React.useRef(null);
 
   const [visible, setVisible] = useState(false);
   const [report, setReport] = useState("");
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(isLiked);
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
-  const listLanguages = ["English", "Math", "Physics"];
-  const listSpecialies = ["English", "Math", "Physics"];
-  const listRating = [1, 2, 3, 4, 5];
-  const sentReport = () => {
-    console.log(report);
+  const listLanguages = getLanguagesListLabel(data.languages.split(","));
+  const listSpecialies = getSpecialitiesListLabel(data.specialties.split(","));
+  const listRating = data.feedbacks;
+
+  const sentReport = async () => {
+    const response = await reportAction(report, data.userId);
+    if (response.message == "Report successfully") {
+      alert("Report successfully");
+    }
     hideModal();
   };
-
-  const handleBooking = (item) => {
-    console.log(item);
+  const handleBooking = async (item) => {
+    try {
+      const response = await bookTutor({
+        scheduleDetailIds: [item.scheduleDetails[0].id],
+        note: "",
+      });
+      if (response.message == "Book successful") {
+        alert("Booking successfully");
+      }
+    } catch (error) {
+      alert("Booking failed");
+    }
     sheetRef.current.snapTo(2);
   };
-  const handleLike = () => {
+  const handleLike = async () => {
     setLiked(!liked);
+    await favorAction(data.id);
+    setAvatar((prev) => !prev);
   };
   const renderContent = () => (
-    <BookingBottomSheet onBooking={(item) => handleBooking(item)} />
+    <BookingBottomSheet
+      onBooking={(item) => handleBooking(item)}
+      tutorID={data.userId}
+    />
   );
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -99,177 +115,170 @@ export default function TeacherDetail() {
                 source={{ uri: "https://picsum.photos/500/500?random=211" }}
               />
             </View>
-            <View style={styles.profileContainer}>
-              {/* Profile Details */}
-              <View>
-                {/* Profile Image */}
-                <View style={styles.profileImageView}>
-                  <Image
-                    style={styles.profileImage}
-                    source={{
-                      uri: "https://randomuser.me/api/portraits/women/46.jpg",
-                    }}
-                  />
-                </View>
-                {/* Profile Name and Bio */}
-                <View style={styles.nameAndBioView}>
-                  <Text style={styles.userFullName}>{"Sophie Welch"}</Text>
-                </View>
-                <Rating
-                  type="custom"
-                  readonly={true}
-                  startingValue={3}
-                  style={{
-                    marginVertical: 1,
-                    alignSelf: "center",
-                  }}
-                  imageSize={20}
-                  ratingBackgroundColor="transparent"
-                />
-                {/* Book,Message, Report */}
-                <View style={styles.countsView}>
-                  <View
-                    style={{
-                      ...styles.countView,
-                      flex: 4,
-                      alignItems: "flex-start",
-                      marginLeft: 30,
-                    }}
-                  >
-                    <Text style={styles.countText}>From Viet Nam</Text>
+            <Pressable
+              onPress={() => {
+                sheetRef.current.snapTo(2);
+              }}
+            >
+              <View style={styles.profileContainer}>
+                {/* Profile Details */}
+                <View>
+                  {/* Profile Image */}
+                  <View style={styles.profileImageView}>
+                    <Image
+                      style={styles.profileImage}
+                      source={{
+                        uri: data.avatar,
+                      }}
+                    />
                   </View>
-                  <View style={{ ...styles.countView, flex: 1 }}>
-                    <TouchableOpacity onPress={handleLike}>
-                      <AntDesign
-                        name={liked ? "heart" : "hearto"}
-                        size={24}
-                        color="blue"
-                      />
+                  {/* Profile Name and Bio */}
+                  <View style={styles.nameAndBioView}>
+                    <Text style={styles.userFullName}>{data.name}</Text>
+                  </View>
+                  <Rating
+                    type="custom"
+                    readonly={true}
+                    startingValue={data.rating}
+                    style={{
+                      marginVertical: 1,
+                      alignSelf: "center",
+                    }}
+                    imageSize={20}
+                    ratingBackgroundColor="transparent"
+                  />
+                  {/* Book,Message, Report */}
+                  <View style={styles.countsView}>
+                    <View
+                      style={{
+                        ...styles.countView,
+                        flex: 4,
+                        alignItems: "flex-start",
+                        marginLeft: 30,
+                      }}
+                    >
+                      <Text style={styles.countText}>From {data.country}</Text>
+                    </View>
+                    <View style={{ ...styles.countView, flex: 1 }}>
+                      <TouchableOpacity onPress={handleLike}>
+                        <AntDesign
+                          name={liked ? "heart" : "hearto"}
+                          size={24}
+                          color="blue"
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                  {/* Video*/}
+                  <Video
+                    ref={video}
+                    style={styles.video}
+                    source={{
+                      uri: data.video,
+                    }}
+                    useNativeControls
+                    resizeMode="contain"
+                    isLooping
+                  />
+
+                  {/* Interact Buttons View */}
+                  <View style={styles.interactButtonsView}>
+                    <TouchableOpacity
+                      style={styles.interactButton}
+                      onPress={() => sheetRef.current.snapTo(0)}
+                    >
+                      <Text style={styles.interactButtonText}>
+                        {i18n.t("Book")}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={{
+                        ...styles.interactButton,
+                        backgroundColor: "white",
+                        borderWidth: 2,
+                        borderColor: "#4b7bec",
+                      }}
+                    >
+                      <Text
+                        style={{
+                          ...styles.interactButtonText,
+                          color: "#4b7bec",
+                        }}
+                      >
+                        {i18n.t("Message")}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={{
+                        ...styles.interactButton,
+                        flex: 1,
+                        backgroundColor: "white",
+                        borderWidth: 2,
+                        borderColor: "#4b7bec",
+                      }}
+                      onPress={showModal}
+                    >
+                      <Text
+                        style={{
+                          ...styles.interactButtonText,
+                          color: "#4b7bec",
+                          textAlign: "center",
+                        }}
+                      >
+                        ...
+                      </Text>
                     </TouchableOpacity>
                   </View>
                 </View>
-                {/* Video*/}
-                <Video
-                  ref={video}
-                  style={styles.video}
-                  source={{
-                    uri: "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4",
-                  }}
-                  useNativeControls
-                  resizeMode="contain"
-                  isLooping
-                />
-
-                {/* Interact Buttons View */}
-                <View style={styles.interactButtonsView}>
-                  <TouchableOpacity
-                    style={styles.interactButton}
-                    onPress={() => sheetRef.current.snapTo(0)}
-                  >
-                    <Text style={styles.interactButtonText}>
-                      {i18n.t("Book")}
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={{
-                      ...styles.interactButton,
-                      backgroundColor: "white",
-                      borderWidth: 2,
-                      borderColor: "#4b7bec",
-                    }}
-                  >
-                    <Text
-                      style={{ ...styles.interactButtonText, color: "#4b7bec" }}
-                    >
-                      {i18n.t("Message")}
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={{
-                      ...styles.interactButton,
-                      flex: 1,
-                      backgroundColor: "white",
-                      borderWidth: 2,
-                      borderColor: "#4b7bec",
-                    }}
-                    onPress={showModal}
-                  >
-                    <Text
-                      style={{
-                        ...styles.interactButtonText,
-                        color: "#4b7bec",
-                        textAlign: "center",
-                      }}
-                    >
-                      ...
-                    </Text>
-                  </TouchableOpacity>
+                {/* Profile Content */}
+                <View style={styles.profileContent}>
+                  <Text style={styles.headingParagraph}>
+                    {i18n.t("AboutMe")}
+                  </Text>
+                  <Text style={styles.paragraph}>{data.bio}</Text>
+                  <Text style={styles.headingParagraph}>
+                    {i18n.t("Language")}
+                  </Text>
+                  <View style={styles.tagItem}>
+                    <ListTag tags={listLanguages} />
+                  </View>
+                  <Text style={styles.headingParagraph}>
+                    {i18n.t("Education")}
+                  </Text>
+                  <Text style={styles.paragraph}>{data.education}</Text>
+                  <Text style={styles.headingParagraph}>
+                    {i18n.t("Experience")}
+                  </Text>
+                  <Text style={styles.paragraph}>{data.experience}</Text>
+                  <Text style={styles.headingParagraph}>
+                    {i18n.t("Interests")}
+                  </Text>
+                  <Text style={styles.paragraph}>{data.interests}</Text>
+                  <Text style={styles.headingParagraph}>
+                    {i18n.t("Professional")}
+                  </Text>
+                  <Text style={styles.paragraph}>{data.profession}</Text>
+                  <Text style={styles.headingParagraph}>
+                    {i18n.t("Specilities")}
+                  </Text>
+                  <View style={styles.tagItem}>
+                    <ListTag tags={listSpecialies} />
+                  </View>
+                  <Text style={styles.headingParagraph}>
+                    {i18n.t("Course")}
+                  </Text>
+                  <Text style={styles.paragraph}>No Data</Text>
+                  <Text style={styles.headingParagraph}>
+                    {i18n.t("RatingAndComment")}
+                  </Text>
+                  <FlatList
+                    data={listRating}
+                    renderItem={({ item }) => <CommentCard data={item} />}
+                    style={styles.commentList}
+                  />
                 </View>
               </View>
-              {/* Profile Content */}
-              <View style={styles.profileContent}>
-                <Text style={styles.headingParagraph}>{i18n.t("AboutMe")}</Text>
-                <Text style={styles.paragraph}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Mauris nulla neque, scelerisque sit amet velit eu, vestibulum
-                  ultricies odio.
-                </Text>
-                <Text style={styles.headingParagraph}>
-                  {i18n.t("Language")}
-                </Text>
-                <View style={styles.tagItem}>
-                  <ListTag tags={listLanguages} />
-                </View>
-                <Text style={styles.headingParagraph}>
-                  {i18n.t("Education")}
-                </Text>
-                <Text style={styles.paragraph}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Mauris nulla neque, scelerisque sit amet velit eu, vestibulum
-                  ultricies odio.
-                </Text>
-                <Text style={styles.headingParagraph}>
-                  {i18n.t("Experience")}
-                </Text>
-                <Text style={styles.paragraph}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Mauris nulla neque, scelerisque sit amet velit eu, vestibulum
-                  ultricies odio.
-                </Text>
-                <Text style={styles.headingParagraph}>
-                  {i18n.t("Interests")}
-                </Text>
-                <Text style={styles.paragraph}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Mauris nulla neque, scelerisque sit amet velit eu, vestibulum
-                  ultricies odio.
-                </Text>
-                <Text style={styles.headingParagraph}>
-                  {i18n.t("Professional")}
-                </Text>
-                <Text style={styles.paragraph}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Mauris nulla neque, scelerisque sit amet velit eu, vestibulum
-                  ultricies odio.
-                </Text>
-                <Text style={styles.headingParagraph}>
-                  {i18n.t("Specilities")}
-                </Text>
-                <View style={styles.tagItem}>
-                  <ListTag tags={listSpecialies} />
-                </View>
-                <Text style={styles.headingParagraph}>{i18n.t("Course")}</Text>
-                <Text style={styles.paragraph}>No Data</Text>
-                <Text style={styles.headingParagraph}>
-                  {i18n.t("RatingAndComment")}
-                </Text>
-                <FlatList
-                  data={listRating}
-                  renderItem={CommentCard}
-                  style={styles.commentList}
-                />
-              </View>
-            </View>
+            </Pressable>
           </>
         </ScrollView>
       </Provider>

@@ -4,20 +4,31 @@ import LocalizationContext from "../context/LocalizationProvider";
 
 import { COLORS, IMGS, ROUTES } from "../constants";
 import { useNavigation } from "@react-navigation/native";
-export default function LessionCard() {
+export default function LessionCard({ data, onDelete }) {
+  const { scheduleDetailInfo } = data;
+  const { scheduleInfo } = scheduleDetailInfo;
+  const { tutorInfo } = scheduleInfo;
   const navigation = useNavigation();
   const { i18n } = useContext(LocalizationContext);
+  let startDate = new Date(scheduleDetailInfo.startPeriodTimestamp);
+  startDate = startDate.toString().substring(0, 15);
+
   const handleEnterLession = () => {
-    navigation.navigate(ROUTES.VIDEO);
+    navigation.navigate(ROUTES.VIDEO, { data });
+  };
+  const handleDeleteLesson = () => {
+    onDelete(data.id);
   };
   return (
     <View style={styles.outerContainer}>
       <View style={styles.innerContainer}>
-        <Image style={styles.avtimg} source={IMGS.user} />
+        <Image style={styles.avtimg} source={{ uri: tutorInfo.avatar }} />
         <View style={styles.detailContainer}>
-          <Text style={styles.name}>Teacher Seeeee</Text>
-          <Text style={styles.date}>20-02-2002</Text>
-          <Text style={styles.time}>3:30 - 4:30</Text>
+          <Text style={styles.name}>{tutorInfo.name}</Text>
+          <Text style={styles.date}>{startDate}</Text>
+          <Text style={styles.time}>
+            {scheduleDetailInfo.startPeriod} - {scheduleDetailInfo.endPeriod}
+          </Text>
         </View>
       </View>
 
@@ -30,6 +41,7 @@ export default function LessionCard() {
             borderColor: COLORS.danger,
             flex: 1,
           }}
+          onPress={() => handleDeleteLesson()}
         >
           <Text style={{ ...styles.interactButtonText, color: COLORS.danger }}>
             {i18n.t("Cancel")}

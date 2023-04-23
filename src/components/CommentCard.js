@@ -3,23 +3,24 @@ import React from "react";
 import { COLORS, IMGS, ROUTES } from "../constants";
 import { Rating } from "react-native-elements";
 
-export default function CommentCard() {
+export default function CommentCard({ data }) {
+  const date = data.createdAt.substring(0, 10);
   return (
     <View style={styles.container}>
-      <Image style={styles.avtimg} source={IMGS.user} />
+      <Image style={styles.avtimg} source={{ uri: data.firstInfo.avatar }} />
       <View style={styles.innnerContainer}>
-        <Text style={styles.name}>Teacher Se</Text>
-        <Text style={styles.comment}>Good</Text>
+        <Text style={styles.name}>{data.firstInfo.name}</Text>
+        <Text style={styles.comment}>{data.content}</Text>
       </View>
       <View style={{ ...styles.innnerContainer, alignItems: "flex-end" }}>
         <Rating
           type="custom"
           readonly={true}
-          startingValue={3}
+          startingValue={data.rating}
           imageSize={20}
           ratingBackgroundColor="transparent"
         />
-        <Text style={styles.comment}>20-02-2002</Text>
+        <Text style={styles.comment}>{date}</Text>
       </View>
     </View>
   );

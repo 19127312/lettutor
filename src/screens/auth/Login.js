@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   Image,
   StyleSheet,
@@ -7,63 +7,96 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from "react-native";
+import * as WebBrowser from "expo-web-browser";
+import * as Google from "expo-auth-session/providers/google";
 import { TextInput } from "react-native-paper";
 
-import logo from "../../assets/logo.png";
 import facebookLogo from "../../assets/facebookLogo.png";
 import googleLogo from "../../assets/googleLogo.png";
 
 import { COLORS, ROUTES, IMGS } from "../../constants";
+import { googleLoginAuth, login } from "../../services/authAPI";
+import AuthContext from "../../context/AuthProvider";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+WebBrowser.maybeCompleteAuthSession();
 export default Login = ({ navigation }) => {
+  const { setAuth } = useContext(AuthContext);
   const [emailError, setemailError] = useState("");
   const [loginError, setloginError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(true);
+  const [accessToken, setAccessToken] = useState(null);
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    clientId:
+      "237722397720-hkdm7tjfm427d97fnv5d9dqbrh8pgknb.apps.googleusercontent.com",
+    androidClientId:
+      "237722397720-49fdld1mvtihjsg044gjlheljmhgfdru.apps.googleusercontent.com",
+  });
+  useEffect(() => {
+    async function getAccessToken() {
+      const accessToken = await AsyncStorage.getItem("accessToken");
+      if (accessToken) {
+        navigation.navigate(ROUTES.HOME);
+      }
+    }
+    getAccessToken();
+  }, []);
 
+  useEffect(() => {
+    async function ggLogin() {
+      if (response?.type === "success") {
+        const { authentication } = response;
+        if (authentication?.accessToken) {
+          const response = await googleLoginAuth({
+            accessToken: authentication.accessToken,
+          });
+          setAuth(response.data);
+          navigation.navigate(ROUTES.HOME);
+        }
+      }
+    }
+    ggLogin();
+  }, [accessToken, response]);
   async function handleLogin() {
-    navigation.navigate(ROUTES.HOME);
+    setemailError("");
+    setPasswordError("");
+    setloginError("");
 
-    // setemailError("");
-    // setPasswordError("");
-    // setloginError("");
+    if (email === "") setemailError("Email không được để trống");
+    else {
+      let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+      if (reg.test(email) === false) setemailError("Email không đúng");
+    }
+    if (password === "") setPasswordError("Mật khẩu không được để trống");
 
-    // if (email === "") setemailError("Email không được để trống");
-    // else {
-    //   let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-    //   if (reg.test(email) === false) setemailError("Email không đúng");
-    // }
-    // if (password === "") setPasswordError("Mật khẩu không được để trống");
+    if (
+      emailError === "" &&
+      passwordError === "" &&
+      email !== "" &&
+      password !== ""
+    ) {
+      try {
+        const response = await login({ email, password });
+        if (response.data) {
+          setAuth(response.data);
 
-    // if (
-    //   emailError === "" &&
-    //   passwordError === "" &&
-    //   email !== "" &&
-    //   password !== ""
-    // ) {
-    //   console.log(email);
-    //   console.log(password);
+          navigation.navigate(ROUTES.HOME);
+        } else {
+          setloginError("Đăng nhập thất bại");
+        }
+      } catch (error) {
+        console.log(error);
 
-    //   console.log("login");
-    // }
+        setloginError("Đăng nhập thất bại");
+      }
+    }
   }
 
-  // for login
-  // const deleteGroupMutation = useMutation(deleteGroup, {
-  //   onError: (error) => {
-  //
-  //   },
-  //   onSuccess: (response) => {
-  //      setAuth({ user, accessToken, refreshToken });
-  //   },Navigate
-  //   },
-  // });
-  // const handleOK = async () => {
-  //   await deleteGroupMutation.mutateAsync({
-  //     groupID: id,
-  //   });
-  // };
+  const googleLogin = () => {
+    promptAsync();
+  };
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <View style={styles.container}>
@@ -142,7 +175,7 @@ export default Login = ({ navigation }) => {
                       resizeMode="contain"
                     />
                   </TouchableOpacity>
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={googleLogin}>
                     <Image
                       style={styles.otherLoginIcon}
                       source={googleLogo}

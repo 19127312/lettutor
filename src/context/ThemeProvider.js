@@ -1,5 +1,4 @@
 import { useEffect, createContext, useState, useMemo } from "react";
-import { EventRegister } from "react-native-event-listeners";
 import theme from "../theme/theme";
 const ThemeContext = createContext({});
 

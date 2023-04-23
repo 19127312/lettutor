@@ -13,13 +13,19 @@ import { StepperContainer, StepView } from "@material.ui/react-native-stepper";
 import LocalizationContext from "../../context/LocalizationProvider";
 import DropDownPicker from "react-native-dropdown-picker";
 import * as ImagePicker from "expo-image-picker";
-import { COLORS, IMGS } from "../../constants";
+import { COLORS, IMGS, ROUTES } from "../../constants";
 import moment from "moment";
-import { Video, AVPlaybackStatus } from "expo-av";
-
+import { Video } from "expo-av";
+import { useNavigation } from "@react-navigation/native";
 import { TextInput } from "react-native-paper";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { getUserInfo, becomeTeacher } from "../../services/userAPI";
+import mime from "mime";
+
 export default function BecomeTeacher() {
+  const navigation = useNavigation();
+  const [user, setUser] = useState(null);
+
   const { i18n } = useContext(LocalizationContext);
   const video = React.useRef(null);
   const [videoUri, setVideoUri] = useState(null);
@@ -37,29 +43,28 @@ export default function BecomeTeacher() {
   const [openCountry, setOpenCountry] = useState(false);
   const [valueCountry, setValueCountry] = useState([]);
   const [itemsCountry, setItemsCountry] = useState([
-    { label: "vi", value: "vi" },
-    { label: "en", value: "en" },
-  ]);
-
-  const [openLevel, setOpenLevel] = useState(false);
-  const [valueLevel, setValueLevel] = useState([]);
-  const [itemsLevel, setItemsLevel] = useState([
-    { label: i18n.t("Beginner"), value: i18n.t("Beginner") },
-    { label: i18n.t("Intermediate"), value: i18n.t("Intermediate") },
-    { label: i18n.t("Advanced"), value: i18n.t("Advanced") },
+    { label: "VN", value: "VN" },
+    { label: "USA", value: "USA" },
   ]);
 
   const [openCourses, setOpenCourses] = useState(false);
   const [valueCourses, setValueCourses] = useState([]);
   const [itemsCourses, setItemsCourses] = useState([
-    { label: "STARTERS", value: "STARTERS" },
-    { label: "MOVERS", value: "MOVERS" },
-    { label: "FLYERS", value: "FLYERS" },
-    { label: "KET", value: "KET" },
-    { label: "PET", value: "PET" },
-    { label: "IELTS", value: "IELTS" },
-    { label: "TOEFL", value: "TOEFL" },
-    { label: "TOIEC", value: "TOIEC" },
+    { label: "English for Kids", value: "english-for-kids", id: "3" },
+    { label: "Business English", value: "business-english", id: "4" },
+    {
+      label: "Conversational English",
+      value: "conversational-english",
+      id: "5",
+    },
+    { label: "STARTERS", value: "STARTERS", id: "6" },
+    { label: "MOVERS", value: "MOVERS", id: "7" },
+    { label: "FLYERS", value: "FLYERS", id: "8" },
+    { label: "KET", value: "KET", id: "9" },
+    { label: "PET", value: "PET", id: "10" },
+    { label: "IELTS", value: "IELTS", id: "11" },
+    { label: "TOEFL", value: "TOEFL", id: "12" },
+    { label: "TOIEC", value: "TOIEC", id: "13" },
   ]);
 
   const [interests, setInterests] = useState("");
@@ -113,6 +118,69 @@ export default function BecomeTeacher() {
   useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
   }, []);
+
+  useEffect(() => {
+    async function getUser() {
+      const { data } = await getUserInfo();
+      setUser(data.user);
+      setName(data.user.name);
+      setValueCountry(data.user.country);
+      setValueCourses(() => {
+        let arr = [];
+        data.user.learnTopics.map((item) => {
+          arr.push(item.key);
+        });
+        return arr;
+      });
+    }
+    getUser();
+  }, []);
+
+  const becomeTeacherHandler = async () => {
+    let formData = new FormData();
+    formData.append("name", name);
+    formData.append("birthday", moment(birthDate).format("YYYY-MM-DD"));
+    formData.append("country", valueCountry);
+    formData.append("specialties", "english-for-kids,business-english");
+    formData.append("interests", interests);
+    formData.append("education", education);
+    formData.append("experience", experience);
+    formData.append("profession", profession);
+    formData.append("bio", introduction);
+    formData.append("targetStudent", "Beginner");
+    formData.append("languages", ["Vietnamese", "English"]);
+    if (hasImg) {
+      const newImageUri = "file:///" + img.split("file:/").join("");
+      formData.append("avatar", {
+        uri: newImageUri,
+        type: mime.getType(newImageUri),
+        name: newImageUri.split("/").pop(),
+      });
+    } else {
+      alert("Please choose your avatar");
+      return;
+    }
+    if (videoUri) {
+      console.log(videoUri);
+      const newVideoUri = "file:///" + videoUri.split("file:/").join("");
+
+      formData.append("video", {
+        uri: newVideoUri,
+        name: "video",
+        type: mime.getType(newVideoUri),
+      });
+    } else {
+      alert("Please choose your video");
+      return;
+    }
+
+    formData.append("price", 50000);
+    await becomeTeacher(formData).catch((err) => {
+      {
+        navigation.navigate(ROUTES.HOME_TAB);
+      }
+    });
+  };
   return (
     <View style={styles.container}>
       <StepperContainer allowTapOnTitle style={{ flexGrow: 1 }}>
@@ -147,7 +215,6 @@ export default function BecomeTeacher() {
                 onChangeText={setName}
                 name="name"
                 label="Tên"
-                defaultValue="Nguyen Van Ar"
                 left={<TextInput.Icon icon="account" />}
               />
             </View>
@@ -158,7 +225,7 @@ export default function BecomeTeacher() {
               <TextInput
                 mode="outlined"
                 style={styles.input}
-                value={moment(birthDate).format("DD MMMM, YYYY")}
+                value={moment(user?.birthday).format("DD MMMM, YYYY")}
                 name="dob"
                 label="Ngày sinh"
                 editable={false}
@@ -188,7 +255,7 @@ export default function BecomeTeacher() {
               <TextInput
                 mode="outlined"
                 style={styles.input}
-                value={phone}
+                value={user?.phone}
                 onChangeText={setPhone}
                 name="SDT"
                 label="SDT"
@@ -313,35 +380,6 @@ export default function BecomeTeacher() {
               />
             </View>
           </View>
-          {/* Teaching */}
-          <Text style={styles.headingParagraph}>
-            {i18n.t("IAmBestAtTeachingStudentsWhoAre")}
-          </Text>
-          <View style={styles.formContainer}>
-            <View style={styles.inputContainer}>
-              <DropDownPicker
-                placeholder={i18n.t("SelectLevel")}
-                style={styles.dropdownmulti}
-                open={openLevel}
-                value={valueLevel}
-                items={itemsLevel}
-                setOpen={setOpenLevel}
-                setValue={setValueLevel}
-                setItems={setItemsLevel}
-                theme="LIGHT"
-                mode="BADGE"
-                badgeDotColors={[
-                  "#e76f51",
-                  "#00b4d8",
-                  "#e9c46a",
-                  "#e76f51",
-                  "#8ac926",
-                  "#00b4d8",
-                  "#e9c46a",
-                ]}
-              />
-            </View>
-          </View>
         </StepView>
         <StepView
           title={i18n.t("VideoIntroduction")}
@@ -378,7 +416,11 @@ export default function BecomeTeacher() {
             )}
           </View>
         </StepView>
-        <StepView title={i18n.t("Approval")} subTitle={i18n.t("WaitApproval")}>
+        <StepView
+          title={i18n.t("Approval")}
+          subTitle={i18n.t("WaitApproval")}
+          onNext={becomeTeacherHandler}
+        >
           <Image source={IMGS.completeImg} style={styles.doneImg} />
 
           <View style={styles.formContainer}>

@@ -12,7 +12,24 @@ import React, { useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { COLORS, IMGS } from "../../constants";
-const { height } = Dimensions.get("window");
+
+const convertDate = (time, dateString) => {
+  const [dayOfWeek, monthDayYear] = dateString.split(" ");
+  const [month, day, year] = monthDayYear.split("/");
+
+  const [hour, minute] = time.match(/\d+/g);
+  const isPM = time.indexOf("PM") !== -1;
+
+  const date = new Date(
+    20 + year,
+    month - 1,
+    day,
+    (hour % 12) + (isPM ? 12 : 0),
+    minute
+  );
+  return date;
+  // return stringTime;
+};
 const toTimeString = (time) => {
   const hour = parseInt((time / 3600) % 24);
   const strH = hour < 10 ? ` 0${hour}` : ` ${hour}`;
@@ -24,6 +41,7 @@ const toTimeString = (time) => {
   const strDay = day > 1 ? `${day} days` : day > 0 ? `${day} day` : "";
   return strDay + strH + " : " + strM + " : " + strS;
 };
+
 function convertSecondsToTime(seconds) {
   var hour = Math.floor(seconds / 3600);
   var minute = Math.floor((seconds - hour * 3600) / 60);
@@ -37,15 +55,16 @@ function convertSecondsToTime(seconds) {
   );
 }
 export default function Video({ route, navigation }) {
-  const startTime = new Date("March 29, 2023 03:24:00");
-
-  const waitTime = startTime.valueOf() - Date.now();
+  const { data } = route.params;
+  const { scheduleDetailInfo } = data;
+  const startDate = new Date(scheduleDetailInfo.startPeriodTimestamp);
+  const waitTime = startDate - Date.now();
   const [timerCount, setTimer] = React.useState(parseInt(waitTime / 1000));
   const [timeLearn, setTimeLearn] = React.useState(0);
   useEffect(() => {
     let countDown = setInterval(() => {
       setTimer((lastTimerCount) => {
-        lastTimerCount <= 1 && clearInterval(interval);
+        lastTimerCount <= 1 && clearInterval(countDown);
         return lastTimerCount - 1;
       });
     }, 1000);
@@ -68,7 +87,6 @@ export default function Video({ route, navigation }) {
         <Image style={styles.logo} source={IMGS.logo} resizeMode="contain" />
         <View style={styles.headerRight}>
           <Text style={styles.timeLearn}>
-            {" "}
             {convertSecondsToTime(timeLearn)}
           </Text>
         </View>
@@ -79,7 +97,7 @@ export default function Video({ route, navigation }) {
             <Text style={styles.title}>The lesson will be started after:</Text>
             <Text style={styles.title}>{toTimeString(timerCount)}</Text>
             <Text style={styles.title}>
-              ({startTime.toUTCString().substring(0, 22)})
+              ({startDate.toUTCString().substring(0, 22)}) UTC
             </Text>
           </>
         )}

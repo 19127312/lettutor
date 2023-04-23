@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
-  Text,
+  ActivityIndicator,
   View,
   TextInput,
   TouchableOpacity,
@@ -15,30 +15,26 @@ import axios from "axios";
 import { REACT_APP_API_KEY } from "@env";
 
 export default function ChatScreen1() {
-  const [messages, setMessages] = useState([]);
-
+  const [allMessages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [inputMessage, setInputMessage] = useState("");
 
   async function sendMessage() {
     if (inputMessage === "") {
-      return setInputMessage("");
+      setInputMessage("");
+      return;
     }
     setMessages((pre) => {
-      return [...pre, { message: inputMessage, fromMe: true }];
+      return [...pre, { content: inputMessage, role: "user" }];
     });
     setInputMessage("");
-
+    allMessages.push({ content: inputMessage, role: "user" });
     const apikey = REACT_APP_API_KEY;
     const response = await axios.post(
-      "https://api.openai.com/v1/completions",
+      "https://api.openai.com/v1/chat/completions",
       {
-        prompt: inputMessage,
-        max_tokens: 60,
-        temperature: 0.7,
-        top_p: 1,
-        frequency_penalty: 0,
-        presence_penalty: 0,
-        model: "text-davinci-003",
+        model: "gpt-3.5-turbo",
+        messages: [...allMessages],
       },
       {
         headers: {
@@ -47,13 +43,13 @@ export default function ChatScreen1() {
         },
       }
     );
-    const res = response.data.choices[0].text;
+    const res = response.data.choices[0].message.content;
     let mess = res.replace(/^\n/, "");
     mess = mess.replace(/^\n/, "");
-
     setMessages((pre) => {
-      return [...pre, { message: mess, fromMe: false }];
+      return [...pre, { content: mess, role: "assistant" }];
     });
+    setLoading(false);
   }
 
   return (
@@ -62,9 +58,14 @@ export default function ChatScreen1() {
         <FlatList
           style={{ backgroundColor: "#f2f2ff" }}
           inverted={true}
-          data={JSON.parse(JSON.stringify(messages)).reverse()}
+          data={JSON.parse(JSON.stringify(allMessages)).reverse()}
           renderItem={({ item }) => <ChatItem item={item} />}
         />
+        {loading && (
+          <View style={styles.loading}>
+            <ActivityIndicator size="large" />
+          </View>
+        )}
 
         <View style={{ paddingVertical: 10 }}>
           <View style={styles.messageInputView}>
@@ -74,6 +75,7 @@ export default function ChatScreen1() {
               placeholder="Message"
               onChangeText={(text) => setInputMessage(text)}
               onSubmitEditing={() => {
+                setLoading(true);
                 sendMessage();
               }}
             />
@@ -96,11 +98,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f2f2ff",
+    justifyContent: "center",
   },
   messageInputView: {
     display: "flex",
     flexDirection: "row",
-    marginHorizontal: 14,
+    marginHorizontal: 10,
     backgroundColor: "#fff",
     borderRadius: 4,
   },
@@ -112,5 +115,8 @@ const styles = StyleSheet.create({
   messageSendView: {
     paddingHorizontal: 10,
     justifyContent: "center",
+  },
+  loading: {
+    marginVertical: 10,
   },
 });

@@ -20,6 +20,7 @@ const en = {
   Country: "Country",
   SelectLevel: "Select Level",
   Beginner: "Beginner",
+  HigherBeginner: "Higher Beginner",
   Intermediate: "Intermediate",
   Advanced: "Advanced",
   Update: "Update",
@@ -67,6 +68,7 @@ const en = {
   Report: "Report",
   Sent: "Sent",
   NoReview: "No Review",
+  NoResult: "No Result",
 };
 const vi = {
   Language: "Ngôn ngữ",
@@ -130,7 +132,8 @@ const vi = {
   Submit: "Gửi",
   MySpecialities: "Chuyên môn của tôi",
   IntroduceYourself: "Giới thiệu bản thân",
-  DoneStep: "Bạn đã hoàn thành bước này, vui lòng chờ duyệt",
+  DoneStep:
+    "Bạn đã hoàn thành các bước để trở thành giáo viên, vui lòng chờ duyệt",
   TotalTimeLearning: "Tổng thời gian học",
   UpcomingLession: "Lịch học sắp tới",
   Cancel: "Hủy",
@@ -138,6 +141,8 @@ const vi = {
   Report: "Báo cáo",
   Sent: "Gửi",
   NoReview: "Không có đánh giá",
+  NoResult: "Không có kết quả",
+  HigherBeginner: "Cao hơn bắt đầu",
 };
 
 export { en, vi };

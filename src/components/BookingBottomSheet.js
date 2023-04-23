@@ -1,43 +1,63 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  FlatList,
-} from "react-native";
-import React from "react";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import React, { useState, useEffect } from "react";
 import { COLORS } from "../constants";
-export default function BookingBottomSheet({ onBooking }) {
-  const arr = [
-    "Fri,29 April 2023, 08:00 PM",
-    "Sat,30 April 2023, 08:00 PM",
-    "Sun,31 April 2023, 08:00 PM",
-    "Mon,01 May 2023, 08:00 PM",
-    "Tue,02 May 2023, 08:00 PM",
-    "Wed,03 May 2023, 08:00 PM",
-    "Thu,04 May 2023, 08:00 PM",
-  ];
-  const renderItem = (item) => (
-    <TouchableOpacity style={styles.button} onPress={() => handleBooking(item)}>
-      <Text style={styles.buttonText}> {item} </Text>
-    </TouchableOpacity>
-  );
+import { getSchedule } from "../services/tutorAPI";
+import { LogBox } from "react-native";
+import { ScrollView, FlatList } from "react-native-gesture-handler";
+
+export default function BookingBottomSheet({ onBooking, tutorID }) {
+  const startTimestamp = Date.now() + 50 * 60 * 60 * 24;
+  const endTimestamp = Date.now() + 604800000;
+  const [schedule, setSchedule] = React.useState([]);
+  useEffect(() => {
+    async function fetchSchedule() {
+      const { scheduleOfTutor } = await getSchedule({
+        tutorId: tutorID,
+        startTimestamp,
+        endTimestamp,
+      });
+      let getSchedules = scheduleOfTutor.filter((item) => !item.isBooked);
+      getSchedules = getSchedules.sort(
+        (a, b) => a.startTimestamp - b.startTimestamp
+      );
+      setSchedule(getSchedules);
+    }
+    fetchSchedule();
+  }, []);
+  useEffect(() => {
+    LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
+  }, []);
+  const renderItem = (item) => {
+    const date = new Date(item.startTimestamp);
+    const stringDate = date.toString().slice(0, 10);
+
+    return (
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => handleBooking(item)}
+      >
+        <Text style={styles.buttonText}>
+          {stringDate} {item.startTime} - {item.endTime}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
   const handleBooking = (index) => {
     onBooking(index);
   };
   return (
-    <View
+    <ScrollView
       style={{
         backgroundColor: "white",
         padding: 16,
       }}
     >
       <FlatList
-        data={arr}
+        data={schedule}
         renderItem={({ item }) => renderItem(item)}
-        keyExtractor={(item) => item}
+        keyExtractor={(item) => item.id}
       />
-    </View>
+    </ScrollView>
   );
 }
 
