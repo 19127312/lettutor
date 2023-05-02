@@ -16,8 +16,11 @@ import { getListTutor } from "../../services/tutorAPI";
 import { getFlag } from "../../business/handleFlag";
 import { searchTutor } from "../../services/tutorAPI";
 import { COLORS, ROUTES } from "../../constants";
+import ThemeContext from "../../context/ThemeProvider";
 
 export default function Teachers() {
+  const { themeData, setMode } = useContext(ThemeContext);
+
   const { i18n } = useContext(LocalizationContext);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -91,7 +94,9 @@ export default function Teachers() {
   };
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[styles.container, { backgroundColor: themeData.backgroundColor }]}
+    >
       <View style={styles.searchRow}>
         <Searchbar
           placeholder={i18n.t("Search")}

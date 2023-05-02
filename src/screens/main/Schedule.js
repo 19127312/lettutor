@@ -15,8 +15,11 @@ import { COLORS, ROUTES } from "../../constants";
 
 import { getUpcomingBooking, cancelBooking } from "../../services/tutorAPI";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import ThemeContext from "../../context/ThemeProvider";
 
 export default function Schedule() {
+  const { themeData, setMode } = useContext(ThemeContext);
+
   const { i18n } = useContext(LocalizationContext);
   const [totalTime, setTotalTime] = useState("");
   const [upcomingBooking, setUpcomingBooking] = useState([]);
@@ -98,7 +101,9 @@ export default function Schedule() {
     setIsReload((pre) => !pre);
   };
   return (
-    <View style={styles.container}>
+    <View
+      style={[styles.container, { backgroundColor: themeData.backgroundColor }]}
+    >
       <View style={styles.banner}>
         <TouchableOpacity onPress={reload}>
           <Text style={styles.welcomeText}>
@@ -107,7 +112,9 @@ export default function Schedule() {
           <Text style={styles.welcomeText}>{totalTime}</Text>
         </TouchableOpacity>
       </View>
-      <Text style={styles.title}>{i18n.t("UpcomingLession")}</Text>
+      <Text style={[styles.title, { color: themeData.color }]}>
+        {i18n.t("UpcomingLession")}
+      </Text>
       {isLoading ? (
         <ActivityIndicator
           size="large"
