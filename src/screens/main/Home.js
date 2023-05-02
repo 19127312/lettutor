@@ -12,7 +12,10 @@ import LocalizationContext from "../../context/LocalizationProvider";
 import { COLORS, ROUTES } from "../../constants";
 import { getListTutor } from "../../services/tutorAPI";
 import AvatarContext from "../../context/AvatarProvider";
+import ThemeContext from "../../context/ThemeProvider";
+
 export default function Home({ navigation }) {
+  const { themeData, setMode } = useContext(ThemeContext);
   const { avatar } = useContext(AvatarContext);
   const { i18n } = useContext(LocalizationContext);
   const [listTutor, setListTutor] = React.useState([]);
@@ -36,7 +39,9 @@ export default function Home({ navigation }) {
   }, [avatar]);
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[styles.container, { backgroundColor: themeData.backgroundColor }]}
+    >
       <View style={styles.banner}>
         <Text style={styles.welcomeText}>{i18n.t("WelcomeHome")}</Text>
         <TouchableOpacity
@@ -49,7 +54,9 @@ export default function Home({ navigation }) {
         </TouchableOpacity>
       </View>
       <View style={styles.textContainer}>
-        <Text style={styles.title}>{i18n.t("TopTeachers")}</Text>
+        <Text style={[styles.title, { color: themeData.color }]}>
+          {i18n.t("TopTeachers")}
+        </Text>
         <TouchableOpacity
           onPress={() => {
             navigation.navigate(ROUTES.TEACHERS);

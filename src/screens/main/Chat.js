@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   StyleSheet,
   ActivityIndicator,
@@ -13,11 +13,13 @@ import { Icon } from "react-native-elements";
 import ChatItem from "../../components/ChatItem";
 import axios from "axios";
 import { REACT_APP_API_KEY } from "@env";
+import ThemeContext from "../../context/ThemeProvider";
 
 export default function ChatScreen1() {
   const [allMessages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [inputMessage, setInputMessage] = useState("");
+  const { themeData, setMode } = useContext(ThemeContext);
 
   async function sendMessage() {
     if (inputMessage === "") {
@@ -54,9 +56,14 @@ export default function ChatScreen1() {
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <View style={styles.container}>
+      <View
+        style={[
+          styles.container,
+          { backgroundColor: themeData.backgroundColor },
+        ]}
+      >
         <FlatList
-          style={{ backgroundColor: "#f2f2ff" }}
+          style={{ backgroundColor: themeData.backgroundColor }}
           inverted={true}
           data={JSON.parse(JSON.stringify(allMessages)).reverse()}
           renderItem={({ item }) => <ChatItem item={item} />}

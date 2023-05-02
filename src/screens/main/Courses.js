@@ -4,7 +4,11 @@ import LocalizationContext from "../../context/LocalizationProvider";
 import { Searchbar } from "react-native-paper";
 import CourseCard from "../../components/CourseCard";
 import { getListCourse } from "../../services/courseAPI";
+import ThemeContext from "../../context/ThemeProvider";
+
 export default function Courses() {
+  const { themeData, setMode } = useContext(ThemeContext);
+
   const { i18n } = useContext(LocalizationContext);
   const [searchQuery, setSearchQuery] = useState("");
   const [dataCourse, setDataCourse] = useState([]);
@@ -32,7 +36,9 @@ export default function Courses() {
     }
   };
   return (
-    <View style={styles.container}>
+    <View
+      style={[styles.container, { backgroundColor: themeData.backgroundColor }]}
+    >
       <Searchbar
         placeholder={i18n.t("Search")}
         onChangeText={onChangeSearch}
