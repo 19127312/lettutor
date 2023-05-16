@@ -115,11 +115,18 @@ export async function getUpcomingBooking({ page, perPage, dateTimeGte }) {
   }
 }
 
-export async function getHistoryBooking({ page, perPage }) {
-  const stringapi = PATH.GET_HISTORY + `&page=${page}&perPage=${perPage}`;
+export async function getHistoryBooking({ page, perPage, dateTimeGte }) {
   try {
-    const res = await api.get(stringapi);
-    return res.data;
+    const res = await api.get(PATH.GET_UPCOMING, {
+      params: {
+        page,
+        perPage,
+        dateTimeGte,
+        orderBy: "meeting",
+        sortBy: "desc",
+      },
+    });
+    return res.data.data;
   } catch (error) {
     throw Error(error);
   }
