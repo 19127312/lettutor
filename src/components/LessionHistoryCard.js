@@ -5,12 +5,9 @@ import { TextInput } from "react-native-paper";
 import { COLORS, IMGS } from "../constants";
 export default function LessionHistoryCard({ data }) {
   const { i18n } = useContext(LocalizationContext);
-  const { tutorInfo } = data;
-  const dateTime = data.startTime.split("T")[0];
-  const time =
-    data.startTime.split("T")[1].split(":")[0] +
-    ":" +
-    data.startTime.split("T")[1].split(":")[1];
+  const { scheduleDetailInfo } = data;
+  const { scheduleInfo } = scheduleDetailInfo;
+  const { tutorInfo } = scheduleInfo;
   // const review = data.review ? data.review : i18n.t("NoReview");
   return (
     <View style={styles.outerContainer}>
@@ -18,8 +15,10 @@ export default function LessionHistoryCard({ data }) {
         <Image style={styles.avtimg} source={{ uri: tutorInfo.avatar }} />
         <View style={styles.detailContainer}>
           <Text style={styles.name}>{tutorInfo.name}</Text>
-          <Text style={styles.date}>{dateTime}</Text>
-          <Text style={styles.date}>{time}</Text>
+          <Text style={styles.date}>{scheduleInfo.date}</Text>
+          <Text style={styles.date}>
+            {scheduleInfo.startTime}-{scheduleInfo.endTime}
+          </Text>
         </View>
       </View>
       <TextInput

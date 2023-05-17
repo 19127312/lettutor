@@ -12,6 +12,7 @@ export default function HistoryCourses() {
     let { rows } = await getHistoryBooking({
       page: page,
       perPage: 10,
+      dateTimeLte: Date.now(),
     });
     if (rows.length > 0) {
       setHistoryBooking([...historyBooking, ...rows]);
